@@ -1,35 +1,34 @@
 <template>
-  <div>
-    <h1>Users</h1>
-    <ul>
-      <li v-for="user in users" :key="user.id">{{ user.username }}</li>
-    </ul>
-    <input v-model="newUser.username" placeholder="Username" />
-    <input v-model="newUser.email" placeholder="Email" />
-    <button @click="addUser">Add User</button>
-  </div>
+  <v-app class="app">
+    <TheHeader />
+    <v-main>
+      <!-- <TheSidebar /> -->
+      <router-view></router-view>
+    </v-main>
+    <TheFooter />
+  </v-app>
 </template>
 
 <script>
-import axios from 'axios';
+import TheHeader from './components/TheHeader.vue'; 
+import TheFooter from './components/TheFooter.vue';
+import TheSidebar from './components/TheSidebar.vue';
 
 export default {
-  data() {
-    return {
-      users: [],
-      newUser: { username: '', email: '' },
-    };
-  },
-  async created() {
-    const response = await axios.get('http://localhost:5000/api/users');
-    this.users = response.data;
-  },
-  methods: {
-    async addUser() {
-      const response = await axios.post('http://localhost:5000/api/users', this.newUser);
-      this.users.push(response.data);
-      this.newUser = { username: '', email: '' };
-    },
-  },
+  name: 'App',
+  components: {
+    TheHeader,
+    TheFooter,
+    TheSidebar,
+  }
+
 };
+
 </script>
+
+<style>
+ .app {
+   max-width: 1000px;
+   margin: 0 auto;
+ }
+</style>

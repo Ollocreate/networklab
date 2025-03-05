@@ -1,0 +1,10 @@
+<template>
+  <v-text-field
+    v-model="name"
+    :error-messages="nameErrors"
+    label="Имя"
+    required
+    @input="$v.name.$touch()"
+    @blur="$v.name.$touch()"
+  ></v-text-field>
+</template>
