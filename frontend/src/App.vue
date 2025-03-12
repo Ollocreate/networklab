@@ -12,14 +12,14 @@
 <script>
 import TheHeader from './components/TheHeader.vue'; 
 import TheFooter from './components/TheFooter.vue';
-import TheSidebar from './components/TheSidebar.vue';
+// import TheSidebar from './components/TheSidebar.vue';
 
 export default {
   name: 'App',
   components: {
     TheHeader,
     TheFooter,
-    TheSidebar,
+    // TheSidebar,
   }
 
 };

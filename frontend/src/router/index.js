@@ -25,6 +25,16 @@ const routes = [
     name: 'Register',
     component: () => import('@/views/RegisterPage.vue'),
   },
+  {
+    path: '/student',
+    name: 'Account',
+    component: () => import('@/views/AccountPage.vue'),
+  },
+  {
+    path: '/admin',
+    name: 'AdminDashboard',
+    component: () => import('@/views/AdminDashboard.vue'),
+  },
 ];
 
 const router = createRouter({

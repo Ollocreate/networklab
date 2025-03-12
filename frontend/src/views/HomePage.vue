@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'HomePage',
   data() {
@@ -20,9 +21,14 @@ export default {
       newUser: { username: '', email: '' },
     };
   },
+  async created() {
+    const response = await axios.get('http://localhost:5000/api/users');
+    this.users = response.data;
+  },
   methods: {
-    addUser() {
-      this.users.push({ ...this.newUser });
+    async addUser() {
+      const response = await axios.post('http://localhost:5000/api/users', this.newUser);
+      this.users.push(response.data);
       this.newUser = { username: '', email: '' };
     },
   },
@@ -30,5 +36,14 @@ export default {
 </script>
 
 <style>
-
+  ul {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+  li {
+    list-style-type: none;
+    padding: 10px;
+  }
 </style>
