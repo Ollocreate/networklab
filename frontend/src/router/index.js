@@ -35,6 +35,23 @@ const routes = [
     name: 'AdminDashboard',
     component: () => import('@/views/AdminDashboard.vue'),
   },
+
+  {
+    path: '/material',
+    name: 'MaterialPage',
+    component: () => import('@/views/MaterialPage.vue'),
+  },
+  {
+    path: '/materialcreate',
+    name: 'CreateMaterial',
+    component: () => import('@/views/CreateMaterial.vue'),
+  },
+
+  {
+    path: '/admin',
+    name: 'AdminDashboard',
+    component: () => import('@/views/AdminDashboard.vue'),
+  },
 ];
 
 const router = createRouter({
