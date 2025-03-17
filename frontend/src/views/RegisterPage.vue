@@ -73,9 +73,6 @@ export default {
         alert(error.response.data.error);
       }
     },
-    goToLogin() {
-      this.$router.push("/login");
-    },
   },
 };
 </script>

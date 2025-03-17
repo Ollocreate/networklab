@@ -1,14 +1,23 @@
 <template>
-  <form @submit.prevent="submit">
-    <v-text-field v-model="email" label="E-mail" required></v-text-field>
+  <v-container class="login-container">
+    <v-card class="login-card">
+      <v-card-title class="text-center">Вход</v-card-title>
+      <v-card-text>
+        <form @submit.prevent="submit">
+          <v-text-field v-model="email" label="E-mail" required></v-text-field>
 
-    <v-text-field v-model="password" label="Пароль" type="password" required></v-text-field>
+          <v-text-field v-model="password" label="Пароль" type="password" required></v-text-field>
 
-    <div class="btn-container">
-      <v-btn color="primary" @click="submit">Войти</v-btn>
-      <v-btn color="blue-darken-4" variant="plain" size="small" @click="clear">Забыли пароль?</v-btn>
-    </div>
-  </form>
+          <v-alert v-if="errorMessage" type="error" class="mt-2">{{ errorMessage }}</v-alert>
+
+          <div class="btn-container">
+            <v-btn color="primary" @click="submit">Войти</v-btn>
+            <v-btn color="blue-darken-4" variant="plain" size="small" @click="clear">Забыли пароль?</v-btn>
+          </div>
+        </form>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -20,15 +29,18 @@ export default {
     return {
       email: "",
       password: "",
+      errorMessage: "",
     };
   },
   methods: {
     ...mapActions(["login"]),
 
     async submit() {
+      this.errorMessage = ""; // Очистка ошибки перед отправкой
       try {
         const response = await this.login({ email: this.email, password: this.password });
 
+        // Перенаправление в зависимости от роли
         if (response.user.role === "admin") {
           this.$router.push("/admin");
         } else if (response.user.role === "teacher") {
@@ -37,7 +49,7 @@ export default {
           this.$router.push("/student");
         }
       } catch (error) {
-        alert("Ошибка входа: " + (error.response?.data?.error || "Попробуйте снова"));
+        this.errorMessage = error.response?.data?.error || "Ошибка входа. Попробуйте снова.";
       }
     },
 
@@ -50,13 +62,16 @@ export default {
 </script>
 
 <style>
-form {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50%;
-  text-align: center;
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-card {
+  width: 400px;
+  padding: 20px;
 }
 
 .btn-container {

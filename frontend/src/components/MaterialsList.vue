@@ -17,11 +17,11 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
   computed: {
-    ...mapState(['materials'])
+    ...mapState("material", ['materials'])
   },
 
   methods: {
-    ...mapActions(['fetchMaterials', 'fetchMaterial']),
+    ...mapActions("material", ['fetchMaterials', 'fetchMaterial']),
     selectMaterial(id) {
       this.fetchMaterial(id);
     }

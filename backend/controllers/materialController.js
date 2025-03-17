@@ -31,9 +31,7 @@ exports.getTopics = async (req, res) => {
   try {
     const topics = await Material.findAll({
       attributes: ["id", "title"], 
-      where: { parentId: null },
     });
-    console.log(topics);
     res.json(topics);
   } catch (error) {
     console.error("Ошибка при загрузке тем:", error);
@@ -43,9 +41,6 @@ exports.getTopics = async (req, res) => {
 
 exports.createMaterial = async (req, res) => {
   try {
-    console.log("BODY:", req.body);
-    console.log("FILES:", req.files);
-
     const { title, content, parentId, courseId } = req.body;
 
     if (!title || !content || !courseId) {
@@ -57,7 +52,6 @@ exports.createMaterial = async (req, res) => {
       return res.status(400).json({ error: "Выбранный курс не существует" });
     }
 
-    // Сохраняем файлы
     const uploadedFiles = req.files.map(file => ({
       filename: file.filename,
       path: `/uploads/${file.filename}`
@@ -71,7 +65,7 @@ exports.createMaterial = async (req, res) => {
       courseId: Number(courseId),
       parentId: parentId ? Number(parentId) : null,
       order: 0,
-      mediaUrls: uploadedFiles.length > 0 ? JSON.stringify(uploadedFiles) : null, // Сохраняем файлы, если есть
+      mediaUrls: uploadedFiles.length > 0 ? JSON.stringify(uploadedFiles) : null,
     });
 
     return res.status(201).json(newMaterial);

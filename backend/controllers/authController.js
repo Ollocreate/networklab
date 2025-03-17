@@ -1,4 +1,5 @@
-const { User, TeacherRequest } = require("../models");
+const { User, TeacherRequest, Course } = require("../models");
+const authMiddleware = require("../middleware/authMiddleware");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -26,10 +27,11 @@ exports.register = async (req, res) => {
       return res.json({ message: "Заявка на преподавателя отправлена на рассмотрение" });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
       username,
       email,
-      password,
+      password: hashedPassword,
       role,
       approved: role === "admin" ? true : false,
     });
@@ -43,16 +45,19 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
+  console.log("Запрос на вход:", req.body);
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ where: { email } });
     if (!user) {
+      console.log("Пользователь не найден!");
       return res.status(401).json({ error: "Неверный email или пароль" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      console.log("Неверный пароль!");
       return res.status(401).json({ error: "Неверный email или пароль" });
     }
 
@@ -65,5 +70,39 @@ exports.login = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getProfile = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id, {
+      attributes: ["id", "username", "email", "role"],
+      include: {
+        model: Course,
+        as: "courses",
+        through: { attributes: [] },
+      },
+    });
+
+    if (!user) return res.status(404).json({ error: "Пользователь не найден" });
+
+    if (user.role === "teacher") {
+      res.json({
+        user,
+        courses: user.courses || [],
+        message: "Профиль преподавателя",
+      });
+    } else if (user.role === "student") {
+      res.json({
+        user,
+        courses: user.courses || [],
+        message: "Профиль студента",
+      });
+    } else {
+      res.status(400).json({ error: "Неизвестная роль" });
+    }
+  } catch (error) {
+    console.error("Ошибка при получении профиля:", error);
+    res.status(500).json({ error: "Ошибка сервера" });
   }
 };

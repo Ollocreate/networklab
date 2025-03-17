@@ -1,7 +1,7 @@
 import axios from "axios";
-import { createStore } from "vuex";
 
-export default createStore({
+export default {
+  namespaced: true, // 💡 Добавляем `namespaced: true`, чтобы избежать конфликтов с `index.js`
   state: {
     materials: [],
     topics: [],
@@ -21,6 +21,9 @@ export default createStore({
     },
     SET_COURSES(state, courses) {
       state.courses = courses;
+    },
+    SET_LOADING_TOPICS(state, value) {
+      state.loadingTopics = value;
     },
   },
 
@@ -61,22 +64,30 @@ export default createStore({
       }
     },
 
-    async createMaterial(_, formData) {
+    async createMaterial({ dispatch }, formData) {
       try {
         console.log("!!!!Отправляемый formData in createMaterial!!!!:", ...formData.entries());
         await axios.post("http://localhost:5000/api/materials", formData);
+        dispatch("fetchMaterials"); // 🔄 Обновляем список материалов после добавления
       } catch (error) { 
-      if (error.response) {
-        console.error("Ошибка на сервере:", error.response.data);
-        alert("Ошибка при отправке данных на сервер.");
-      } else if (error.request) {
-        console.error("Ошибка в запросе:", error.request);
-        alert("Ошибка при отправке запроса.");
-      } else {
-        console.error("Неизвестная ошибка:", error.message);
-        alert("Неизвестная ошибка при отправке материала.");
+        if (error.response) {
+          console.error("Ошибка на сервере:", error.response.data);
+          alert("Ошибка при отправке данных на сервер.");
+        } else if (error.request) {
+          console.error("Ошибка в запросе:", error.request);
+          alert("Ошибка при отправке запроса.");
+        } else {
+          console.error("Неизвестная ошибка:", error.message);
+          alert("Неизвестная ошибка при отправке материала.");
+        }
       }
-    }
     },
   },
-});
+
+  getters: {
+    allMaterials: (state) => state.materials,
+    selectedMaterial: (state) => state.selectedMaterial,
+    allTopics: (state) => state.topics,
+    allCourses: (state) => state.courses,
+  },
+};

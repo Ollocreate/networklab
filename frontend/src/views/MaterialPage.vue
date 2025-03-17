@@ -5,7 +5,7 @@
         <MaterialsList />
       </v-col>
 
-      <v-col cols="9">
+      <v-col cols="10">
         <MaterialView />
       </v-col>
     </v-row>

@@ -4,9 +4,19 @@ const Course = require("./Course");
 const Material = require("./material");
 const TeacherRequest = require("./teacherRequest");
 
-// Связь "многие ко многим" (пользователь может записаться на несколько курсов)
-User.belongsToMany(Course, { through: "UserCourses" });
-Course.belongsToMany(User, { through: "UserCourses" });
+User.belongsToMany(Course, {
+  through: "UserCourses", 
+  foreignKey: "UserId",   
+  otherKey: "CourseId",    
+  as: "courses",
+});
+
+Course.belongsToMany(User, {
+  through: "UserCourses",
+  foreignKey: "CourseId",  
+  otherKey: "UserId",      
+  as: "users" 
+});
 
 Course.hasMany(Material, { foreignKey: "courseId", onDelete: "CASCADE" });
 Material.belongsTo(Course, { foreignKey: "courseId" });

@@ -52,8 +52,8 @@ export default {
     const files = ref([]);
     const loading = ref(false);
 
-    const topics = computed(() => store.state.topics);
-    const courses = computed(() => store.state.courses);
+    const topics = computed(() => store.state.material.topics);
+    const courses = computed(() => store.state.material.courses);
 
     const handleFiles = (event) => {
       files.value = event.target.files;
@@ -81,8 +81,8 @@ export default {
 
       try {
         console.log("Отправляемый formData:", ...formData.entries());
-        await store.dispatch("createMaterial", formData);
-        router.push("/materials");
+        await store.dispatch("material/createMaterial", formData);
+        router.push("/material");
       } catch (error) {
         alert("Ошибка при создании материала.");
       } finally {
@@ -91,8 +91,8 @@ export default {
     };
 
     onMounted(() => {
-      store.dispatch("fetchTopics");
-      store.dispatch("fetchCourses");
+      store.dispatch("material/fetchTopics");
+      store.dispatch("material/fetchCourses");
     });
 
     return { title, content, courseId, parentId, files, loading, topics, courses, handleFiles, submitMaterial };

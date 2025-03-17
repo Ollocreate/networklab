@@ -22,7 +22,7 @@ import { mapState, mapActions } from 'vuex';
 
 export default {
   computed: {
-    ...mapState(['selectedMaterial', 'materials']),
+    ...mapState("material", ["selectedMaterial", "materials"]),
     parsedMediaUrls() {
     try {
       return this.selectedMaterial?.mediaUrls ? JSON.parse(this.selectedMaterial.mediaUrls) : [];
@@ -43,7 +43,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchMaterial']),
+    ...mapActions("material", ["fetchMaterial"]),
 
     prevMaterial() {
       if (this.prevId) this.fetchMaterial(this.prevId);

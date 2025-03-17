@@ -11,6 +11,7 @@
     </template>
 
     <template v-else>
+      <v-btn :to="userDashboardLink" text>Личный кабинет</v-btn>
       <v-btn @click="logout" text>Выйти</v-btn>
     </template>
   </v-app-bar>
@@ -22,10 +23,20 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   name: "TheHeader",
   computed: {
-    ...mapGetters(["isAuthenticated"]),
+    ...mapGetters(["isAuthenticated", "getUser"]),
+
+    userDashboardLink() {
+      if (!this.getUser) return "/home";
+      return this.getUser.role === "student" ? "/student" : "/teacher";
+    },
   },
   methods: {
     ...mapActions(["logout"]),
+
+    async logout() {
+      await this.$store.dispatch("logout");
+      this.$router.push("/home"); 
+    },
   },
 };
 </script>

@@ -15,12 +15,7 @@ const User = sequelize.define("User", {
     type: DataTypes.BOOLEAN, 
     defaultValue: false 
   } 
-  }, {
-    hooks: {
-      beforeCreate: async (user) => {
-        user.password = await bcrypt.hash(user.password, 10);
-      }
-    }
-});
+  },
+);
 
 module.exports = User;
