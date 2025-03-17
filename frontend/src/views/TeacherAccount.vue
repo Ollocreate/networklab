@@ -14,7 +14,9 @@
   <v-list>
     <v-list-item v-for="course in courses || []" :key="course.id">
       <v-list-item-content>
-        <v-list-item-title>{{ course.title }}</v-list-item-title>
+        <v-list-item-title>
+          <v-btn :to="`/${course.slug}`">{{ course.title }}</v-btn>
+        </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
   </v-list>
@@ -52,9 +54,11 @@ export default {
   },
   computed: {
     ...mapState(["user", "courses", "materials"]),
+    ...mapState("material", ["materials"]),
   },
   methods: {
-    ...mapActions(["fetchUser", "uploadMaterial"]),
+    ...mapActions(["fetchUser"]),
+    ...mapActions("material", ["fetchUserMaterials", "uploadMaterial"]),
 
     async upload() {
       if (!this.materialTitle) return;
@@ -62,15 +66,17 @@ export default {
       try {
         await this.uploadMaterial({ title: this.materialTitle });
         this.materialTitle = "";
-        this.fetchUser(); // Обновляем список материалов
+        this.fetchUser();
       } catch (error) {
         console.error("Ошибка загрузки материала:", error);
       }
     }
   },
   created() {
-    console.log("fetchUser вызывается...");
     this.fetchUser();
+    if (this.user) {
+      this.fetchUserMaterials(this.user.id);
+    }
   },
 };
 </script>

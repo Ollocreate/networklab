@@ -14,7 +14,9 @@
       <v-list>
         <v-list-item v-for="course in courses" :key="course.id">
           <v-list-item-content>
-            <v-list-item-title>{{ course.title }}</v-list-item-title>
+            <v-list-item-title>
+              <v-btn :to="`/${course.slug}`">{{ course.title }}</v-btn>
+            </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>

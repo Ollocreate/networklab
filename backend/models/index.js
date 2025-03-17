@@ -21,4 +21,7 @@ Course.belongsToMany(User, {
 Course.hasMany(Material, { foreignKey: "courseId", onDelete: "CASCADE" });
 Material.belongsTo(Course, { foreignKey: "courseId" });
 
+User.hasMany(Material, { foreignKey: "userId", as: "materials" });
+Material.belongsTo(User, { foreignKey: "userId", as: "author" });
+
 module.exports = { sequelize, User, Course, TeacherRequest, Material};

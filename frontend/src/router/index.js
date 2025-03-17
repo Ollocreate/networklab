@@ -11,11 +11,6 @@ const routes = [
     component: () => import('@/views/HomePage.vue'),
   },
   {
-    path: '/about',
-    name: 'About',
-    component: () => import('@/views/AboutPage.vue'),
-  },
-  {
     path: '/',
     redirect: '/home',
   },
@@ -34,11 +29,11 @@ const routes = [
     name: 'AdminDashboard',
     component: () => import('@/views/AdminDashboard.vue'),
   },
-
   {
-    path: '/material',
-    name: 'MaterialPage',
+    path: '/:courseSlug',
+    name: 'CoursePage',
     component: () => import('@/views/MaterialPage.vue'),
+    props: true,
   },
   {
     path: '/materialcreate',

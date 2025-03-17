@@ -82,7 +82,7 @@ export default {
       try {
         console.log("Отправляемый formData:", ...formData.entries());
         await store.dispatch("material/createMaterial", formData);
-        router.push("/material");
+        router.push("/teacher");
       } catch (error) {
         alert("Ошибка при создании материала.");
       } finally {

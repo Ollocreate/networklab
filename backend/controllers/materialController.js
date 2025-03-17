@@ -1,13 +1,16 @@
 const { Material, Course, Op } = require("../models");
+const { use } = require("../routes/courseRoutes");
 
 exports.getMaterialsByCourse = async (req, res) => {
   try {
-    const { courseId } = req.params;
-    const materials = await Material.findAll({
-      where: { courseId },
-      order: [["order", "ASC"]],
-    });
+    const { slug } = req.params;
+    
+    const course = await Course.findOne({ where: { slug } });
+    if (!course) {
+      return res.status(404).json({ error: "Курс не найден" });
+    }
 
+    const materials = await Material.findAll({ where: { courseId: course.id } });
     res.json(materials);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -27,6 +30,19 @@ exports.getMaterialById = async (req, res) => {
   }
 };
 
+exports.getUserMaterials = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const materials = await Material.findAll({
+      where: { userId },
+    });
+    res.json(materials);
+  } catch (error) {
+    console.error("Ошибка загрузки материалов пользователя:", error);
+    res.status(500).json({ error: "Ошибка при загрузке материалов" });
+  }
+};
+
 exports.getTopics = async (req, res) => {
   try {
     const topics = await Material.findAll({
@@ -42,6 +58,7 @@ exports.getTopics = async (req, res) => {
 exports.createMaterial = async (req, res) => {
   try {
     const { title, content, parentId, courseId } = req.body;
+    const userId = req.user.id;
 
     if (!title || !content || !courseId) {
       return res.status(400).json({ error: "Необходимо передать title, content и courseId" });
@@ -66,6 +83,7 @@ exports.createMaterial = async (req, res) => {
       parentId: parentId ? Number(parentId) : null,
       order: 0,
       mediaUrls: uploadedFiles.length > 0 ? JSON.stringify(uploadedFiles) : null,
+      userId,
     });
 
     return res.status(201).json(newMaterial);

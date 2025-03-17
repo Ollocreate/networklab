@@ -27,8 +27,15 @@ export default {
     }
   },
 
-  mounted() {
-    this.fetchMaterials(2); // Пример courseId
+  watch: {
+  "$route.params.courseSlug": {
+    immediate: true,
+    handler(slug) {
+      if (slug) {
+        this.fetchMaterials(slug);
+      }
+    }
   }
+}
 };
 </script>

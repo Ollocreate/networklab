@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default {
-  namespaced: true, // 💡 Добавляем `namespaced: true`, чтобы избежать конфликтов с `index.js`
+  namespaced: true,
   state: {
     materials: [],
     topics: [],
@@ -22,15 +22,12 @@ export default {
     SET_COURSES(state, courses) {
       state.courses = courses;
     },
-    SET_LOADING_TOPICS(state, value) {
-      state.loadingTopics = value;
-    },
   },
 
   actions: {
-    async fetchMaterials({ commit }, courseId) {
+    async fetchMaterials({ commit }, courseSlug) {
       try {
-        const response = await axios.get(`http://localhost:5000/api/materials/course/${courseId}`);
+        const response = await axios.get(`http://localhost:5000/api/materials/course/${courseSlug}`);
         commit("SET_MATERIALS", response.data);
       } catch (error) {
         console.error("Ошибка загрузки материалов", error);
@@ -64,11 +61,19 @@ export default {
       }
     },
 
+    async fetchUserMaterials({ commit }, userId) {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/materials/user/${userId}`);
+        commit("SET_MATERIALS", response.data);
+      } catch (error) {
+        console.error("Ошибка загрузки материалов пользователя", error);
+      }
+    },
+
     async createMaterial({ dispatch }, formData) {
       try {
-        console.log("!!!!Отправляемый formData in createMaterial!!!!:", ...formData.entries());
         await axios.post("http://localhost:5000/api/materials", formData);
-        dispatch("fetchMaterials"); // 🔄 Обновляем список материалов после добавления
+        dispatch("fetchMaterials");
       } catch (error) { 
         if (error.response) {
           console.error("Ошибка на сервере:", error.response.data);

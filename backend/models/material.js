@@ -16,7 +16,8 @@ const Material = sequelize.define('Material', {
       this.setDataValue("mediaUrls", JSON.stringify(value));
     }},
   parentId: { type: DataTypes.INTEGER, allowNull: true },
-  order: { type: DataTypes.INTEGER, allowNull: true }
+  order: { type: DataTypes.INTEGER, allowNull: true },
+  userId: { type: DataTypes.UUID, allowNull: false },
 });
 
 module.exports = Material;

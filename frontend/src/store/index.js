@@ -1,8 +1,8 @@
 import { createStore } from "vuex";
 import axios from "axios";
-import material from "./material"; // Подключаем как модуль
+import material from "./material";
 
-const API_URL = "http://localhost:5000/api/auth"; // Базовый URL
+const API_URL = "http://localhost:5000/api/auth";
 
 export default createStore({
   state: {
@@ -18,7 +18,6 @@ export default createStore({
       state.token = token;
       state.user = user;
 
-      // Устанавливаем токен в заголовки axios
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     },
 
@@ -28,7 +27,7 @@ export default createStore({
       state.token = "";
       state.user = null;
 
-      delete axios.defaults.headers.common["Authorization"]; // Удаляем заголовок
+      delete axios.defaults.headers.common["Authorization"];
     },
 
     setUser(state, { user, courses }) {
@@ -36,6 +35,7 @@ export default createStore({
       state.courses = courses || [];
       localStorage.setItem("user", JSON.stringify(user));
     },
+
     setCourses(state, courses) {
       state.courses = courses;
     },
@@ -69,7 +69,6 @@ export default createStore({
           headers: { Authorization: `Bearer ${state.token}` }
         });
     
-        console.log("👤 Данные пользователя:", response.data);
         commit("setUser", { user: response.data.user, courses: response.data.courses });
       } catch (error) {
         console.error("Ошибка загрузки пользователя:", error);
