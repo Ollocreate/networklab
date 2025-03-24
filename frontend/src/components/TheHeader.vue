@@ -26,8 +26,9 @@ export default {
     ...mapGetters(["isAuthenticated", "getUser"]),
 
     userDashboardLink() {
-      if (!this.getUser) return "/home";
-      return this.getUser.role === "student" ? "/student" : "/teacher";
+      const user = this.getUser;
+      if (!user || !user.role) return "/home";
+      return user.role === "student" ? "/student" : "/teacher";
     },
   },
   methods: {

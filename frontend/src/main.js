@@ -18,5 +18,8 @@ app.use(router);
 app.use(vuetify);
 app.use(store);
 
+// Инициализируем store перед монтированием приложения
+store.dispatch('initialize');
+
 app.mount('#app');
 

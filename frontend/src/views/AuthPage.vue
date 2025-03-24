@@ -1,23 +1,42 @@
 <template>
-  <v-container class="login-container">
-    <v-card class="login-card">
-      <v-card-title class="text-center">Вход</v-card-title>
-      <v-card-text>
-        <form @submit.prevent="submit">
-          <v-text-field v-model="email" label="E-mail" required></v-text-field>
+  <form @submit.prevent="submit">
+    <v-text-field 
+      v-model="email" 
+      label="E-mail" 
+      required
+      :disabled="loading"
+    ></v-text-field>
 
-          <v-text-field v-model="password" label="Пароль" type="password" required></v-text-field>
+    <v-text-field 
+      v-model="password" 
+      label="Пароль" 
+      type="password" 
+      required
+      :disabled="loading"
+    ></v-text-field>
 
-          <v-alert v-if="errorMessage" type="error" class="mt-2">{{ errorMessage }}</v-alert>
+    <v-alert v-if="errorMessage" type="error" class="mt-2">{{ errorMessage }}</v-alert>
 
-          <div class="btn-container">
-            <v-btn color="primary" @click="submit">Войти</v-btn>
-            <v-btn color="blue-darken-4" variant="plain" size="small" @click="clear">Забыли пароль?</v-btn>
-          </div>
-        </form>
-      </v-card-text>
-    </v-card>
-  </v-container>
+    <div class="btn-container">
+      <v-btn 
+        color="primary" 
+        @click="submit"
+        :loading="loading"
+        :disabled="loading"
+      >
+        Войти
+      </v-btn>
+      <v-btn 
+        color="blue-darken-4" 
+        variant="plain" 
+        size="small" 
+        @click="clear"
+        :disabled="loading"
+      >
+        Забыли пароль?
+      </v-btn>
+    </div>
+  </form>
 </template>
 
 <script>
@@ -30,15 +49,24 @@ export default {
       email: "",
       password: "",
       errorMessage: "",
+      loading: false,
     };
   },
   methods: {
     ...mapActions(["login"]),
 
     async submit() {
-      this.errorMessage = ""; // Очистка ошибки перед отправкой
+      if (this.loading) return;
+      
+      this.errorMessage = "";
+      this.loading = true;
+      
       try {
         const response = await this.login({ email: this.email, password: this.password });
+
+        if (!response || !response.user) {
+          throw new Error("Ошибка получения данных пользователя");
+        }
 
         // Перенаправление в зависимости от роли
         if (response.user.role === "admin") {
@@ -50,34 +78,38 @@ export default {
         }
       } catch (error) {
         this.errorMessage = error.response?.data?.error || "Ошибка входа. Попробуйте снова.";
+      } finally {
+        this.loading = false;
       }
     },
 
     clear() {
       this.email = "";
       this.password = "";
+      this.errorMessage = "";
     },
   },
 };
 </script>
 
 <style>
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.login-card {
-  width: 400px;
-  padding: 20px;
+form{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  text-align: center;
 }
 
 .btn-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 10px;
+}
+
+.button-container .v-btn {
+  margin-top: 10px;
 }
 </style>

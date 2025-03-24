@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import AuthPage from "../views/AuthPage.vue";
 import StudentAccount from "../views/StudentAccount.vue";
 import TeacherAccount from "../views/TeacherAccount.vue";
+import store from '../store';
 
 const routes = [
   { path: "/", component: AuthPage },
@@ -58,13 +59,15 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = store.getters.getUser;
 
   if (to.meta.requiresAuth) {
     if (!user) {
+      console.log("Пользователь не авторизован");
       return next("/");
     }
     if (to.meta.role && user.role !== to.meta.role) {
+      console.log("Роль пользователя не соответствует требуемой роли");
       return next("/");
     }
   }

@@ -50,7 +50,8 @@ export default {
       roles: [
         { text: "Студент", value: "student" },
         { text: "Преподаватель", value: "teacher" }
-      ]
+      ],
+      nameErrors: []
     };
   },
   computed: {
@@ -73,6 +74,13 @@ export default {
         alert(error.response.data.error);
       }
     },
+    clear() {
+      this.username = "";
+      this.email = "";
+      this.password = "";
+      this.role = "";
+      this.nameErrors = [];
+    }
   },
 };
 </script>

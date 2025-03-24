@@ -6,8 +6,8 @@ const API_URL = "http://localhost:5000/api/auth";
 
 export default createStore({
   state: {
-    token: localStorage.getItem("token") || "",
-    user: JSON.parse(localStorage.getItem("user")) || null,
+    token: "",
+    user: null,
     courses: [],
   },
 
@@ -26,7 +26,7 @@ export default createStore({
       localStorage.removeItem("user");
       state.token = "";
       state.user = null;
-
+      state.courses = [];
       delete axios.defaults.headers.common["Authorization"];
     },
 
@@ -39,13 +39,32 @@ export default createStore({
     setCourses(state, courses) {
       state.courses = courses;
     },
+
+    initializeState(state) {
+      const token = localStorage.getItem("token");
+      const userStr = localStorage.getItem("user");
+      if (token && userStr) {
+        state.token = token;
+        state.user = JSON.parse(userStr);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      }
+    }
   },
 
   actions: {
+    initialize({ commit }) {
+      commit("initializeState");
+    },
+
     async login({ commit }, credentials) {
       try {
         const response = await axios.post(`${API_URL}/login`, credentials);
         const { token, user } = response.data;
+        
+        if (!token || !user) {
+          throw new Error("Неверный формат ответа от сервера");
+        }
+        
         commit("setAuth", { token, user });
         return response.data;
       } catch (error) {
@@ -59,9 +78,9 @@ export default createStore({
       try {
         let profileUrl = "/profile"; // Общий путь по умолчанию
     
-        if (state.user.role === "student") {
+        if (state.user && state.user.role === "student") {
           profileUrl = "/profile/student";  // Путь для студента
-        } else if (state.user.role === "teacher") {
+        } else if (state.user && state.user.role === "teacher") {
           profileUrl = "/profile/teacher";  // Путь для преподавателя
         }
     
