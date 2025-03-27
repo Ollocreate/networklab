@@ -8,6 +8,7 @@ const { sequelize } = require("./models");
 const userRoutes = require("./routes/userRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const materialRoutes = require("./routes/materialRoutes");
+const labRoutes = require("./routes/labRoutes");
 
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
@@ -34,6 +35,7 @@ app.use("/api/admin", adminRoutes);
 
 // Все маршруты материалов теперь доступны по /api/materials
 app.use("/api/materials", materialRoutes);
+app.use("/api/labs", labRoutes);
 
 sequelize.sync().then(() => console.log("Database synced"));
 

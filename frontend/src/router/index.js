@@ -31,6 +31,11 @@ const routes = [
     component: () => import('@/views/AdminDashboard.vue'),
   },
   {
+    path: '/eve',
+    name: 'SimulationPage',
+    component: () => import('@/views/SimulationPage.vue'),
+  },
+  {
     path: '/:courseSlug',
     name: 'CoursePage',
     component: () => import('@/views/MaterialPage.vue'),

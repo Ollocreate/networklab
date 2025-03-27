@@ -1,5 +1,6 @@
 const { User, TeacherRequest, Course } = require("../models");
 const authMiddleware = require("../middleware/authMiddleware");
+const { eveNgClient } = require("../config/eveNgClient");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -35,6 +36,22 @@ exports.register = async (req, res) => {
       role,
       approved: role === "admin" ? true : false,
     });
+
+    try {
+      const response = await eveNgClient.post("/api/folders", {
+        path: "/",
+        name: `${newUser.id}_` + username,
+      });
+
+      if (response.data.status !== "success") {
+        throw new Error("Ошибка при создании папки");
+      }
+
+      console.log(`📂 Папка '${username}' успешно создана в EVE-NG`);
+    } catch (error) {
+      console.error("❌ Ошибка при создании папки в EVE-NG:", error.response?.data || error.message);
+      return res.status(500).json({ error: "Ошибка при создании папки в EVE-NG" });
+    }
 
     const token = generateToken(newUser);
     res.json({ token, user: { id: newUser.id, username, email, role } });
