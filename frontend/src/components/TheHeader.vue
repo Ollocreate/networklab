@@ -36,7 +36,7 @@ export default {
 
     async logout() {
       await this.$store.dispatch("logout");
-      this.$router.push("/home"); 
+      this.$router.push("/home");
     },
   },
 };

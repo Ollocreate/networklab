@@ -14,13 +14,11 @@ const approveRequest = async (req, res) => {
   try {
     const { requestId } = req.body;
 
-    // Находим заявку по ID
     const request = await TeacherRequest.findByPk(requestId);
     if (!request) {
       return res.status(404).json({ error: "Заявка не найдена" });
     }
 
-    // Если заявка уже одобрена или отклонена, не продолжаем
     if (request.status !== "pending") {
       return res.status(400).json({ error: "Заявка уже обработана" });
     }
@@ -33,17 +31,14 @@ const approveRequest = async (req, res) => {
       approved: true,
     });
 
-    // Обновляем статус заявки
     await request.update({ status: "approved" });
 
     res.json({ message: "Заявка одобрена, преподаватель добавлен" });
-
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// Метод для отклонения заявки
 const rejectRequest = async (req, res) => {
   try {
     const { requestId } = req.body;

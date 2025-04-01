@@ -1,35 +1,37 @@
 <template>
   <form @submit.prevent="submit">
-    <v-text-field 
-      v-model="email" 
-      label="E-mail" 
+    <v-text-field
+      v-model="email"
+      label="E-mail"
       required
       :disabled="loading"
     ></v-text-field>
 
-    <v-text-field 
-      v-model="password" 
-      label="Пароль" 
-      type="password" 
+    <v-text-field
+      v-model="password"
+      label="Пароль"
+      type="password"
       required
       :disabled="loading"
     ></v-text-field>
 
-    <v-alert v-if="errorMessage" type="error" class="mt-2">{{ errorMessage }}</v-alert>
+    <v-alert v-if="errorMessage" type="error" class="mt-2">{{
+      errorMessage
+    }}</v-alert>
 
     <div class="btn-container">
-      <v-btn 
-        color="primary" 
+      <v-btn
+        color="primary"
         @click="submit"
         :loading="loading"
         :disabled="loading"
       >
         Войти
       </v-btn>
-      <v-btn 
-        color="blue-darken-4" 
-        variant="plain" 
-        size="small" 
+      <v-btn
+        color="blue-darken-4"
+        variant="plain"
+        size="small"
         @click="clear"
         :disabled="loading"
       >
@@ -57,18 +59,20 @@ export default {
 
     async submit() {
       if (this.loading) return;
-      
+
       this.errorMessage = "";
       this.loading = true;
-      
+
       try {
-        const response = await this.login({ email: this.email, password: this.password });
+        const response = await this.login({
+          email: this.email,
+          password: this.password,
+        });
 
         if (!response || !response.user) {
           throw new Error("Ошибка получения данных пользователя");
         }
 
-        // Перенаправление в зависимости от роли
         if (response.user.role === "admin") {
           this.$router.push("/admin");
         } else if (response.user.role === "teacher") {
@@ -77,7 +81,8 @@ export default {
           this.$router.push("/student");
         }
       } catch (error) {
-        this.errorMessage = error.response?.data?.error || "Ошибка входа. Попробуйте снова.";
+        this.errorMessage =
+          error.response?.data?.error || "Ошибка входа. Попробуйте снова.";
       } finally {
         this.loading = false;
       }
@@ -93,7 +98,7 @@ export default {
 </script>
 
 <style>
-form{
+form {
   position: absolute;
   top: 50%;
   left: 50%;

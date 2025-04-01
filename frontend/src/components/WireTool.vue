@@ -7,7 +7,11 @@
       <div>
         <label>Узел 1 - Интерфейс:</label>
         <select v-model="selectedIface1">
-          <option v-for="iface in interfaces1" :key="iface.id" :value="iface.id">
+          <option
+            v-for="iface in interfaces1"
+            :key="iface.id"
+            :value="iface.id"
+          >
             {{ iface.name }}
           </option>
         </select>
@@ -15,7 +19,11 @@
       <div>
         <label>Узел 2 - Интерфейс:</label>
         <select v-model="selectedIface2">
-          <option v-for="iface in interfaces2" :key="iface.id" :value="iface.id">
+          <option
+            v-for="iface in interfaces2"
+            :key="iface.id"
+            :value="iface.id"
+          >
             {{ iface.name }}
           </option>
         </select>
@@ -62,61 +70,62 @@ export default {
     },
 
     async fetchInterfaces() {
-  const [node1, node2] = this.selectedNodes;
-  try {
-    const res1 = await axios.get(
-      `http://localhost:5000/api/labs/node/${node1.id}/interfaces`
-    );
-    const res2 = await axios.get(
-      `http://localhost:5000/api/labs/node/${node2.id}/interfaces`
-    );
+      const [node1, node2] = this.selectedNodes;
+      try {
+        const res1 = await axios.get(
+          `http://localhost:5000/api/labs/node/${node1.id}/interfaces`
+        );
+        const res2 = await axios.get(
+          `http://localhost:5000/api/labs/node/${node2.id}/interfaces`
+        );
 
-    const parseInterfaces = (data) => {
-      if (Array.isArray(data.ethernet)) {
-        // Если интерфейсы в виде массива (QEMU)
-        return data.ethernet
-        .filter((iface) => iface.network_id === 0)
-        .map((iface, index) => ({
-          id: index,
-          name: iface.name,
-        }));
-      } else {
-        // Если интерфейсы в виде объекта (IOL)
-        return Object.entries(data.ethernet)
-        .filter(([, iface]) => iface.network_id === 0)
-        .map(([key, iface]) => ({
-          id: parseInt(key),
-          name: iface.name,
-        }));
+        const parseInterfaces = (data) => {
+          if (Array.isArray(data.ethernet)) {
+            // Если интерфейсы в виде массива (QEMU)
+            return data.ethernet
+              .filter((iface) => iface.network_id === 0)
+              .map((iface, index) => ({
+                id: index,
+                name: iface.name,
+              }));
+          } else {
+            // Если интерфейсы в виде объекта (IOL)
+            return Object.entries(data.ethernet)
+              .filter(([, iface]) => iface.network_id === 0)
+              .map(([key, iface]) => ({
+                id: parseInt(key),
+                name: iface.name,
+              }));
+          }
+        };
+
+        this.interfaces1 = parseInterfaces(res1.data.data);
+        this.interfaces2 = parseInterfaces(res2.data.data);
+
+        if (this.interfaces1.length > 0) {
+          this.selectedIface1 = this.interfaces1[0].id;
+        }
+        if (this.interfaces2.length > 0) {
+          this.selectedIface2 = this.interfaces2[0].id;
+        }
+
+        console.log("🌐 Интерфейсы узла 1:", this.interfaces1);
+        console.log("🌐 Интерфейсы узла 2:", this.interfaces2);
+      } catch (error) {
+        console.error("Ошибка загрузки интерфейсов:", error.message);
       }
-    };
-
-    this.interfaces1 = parseInterfaces(res1.data.data);
-    this.interfaces2 = parseInterfaces(res2.data.data);
-
-    if (this.interfaces1.length > 0) {
-      this.selectedIface1 = this.interfaces1[0].id;
-    }
-    if (this.interfaces2.length > 0) {
-      this.selectedIface2 = this.interfaces2[0].id;
-    }
-
-    console.log("🌐 Интерфейсы узла 1:", this.interfaces1);
-    console.log("🌐 Интерфейсы узла 2:", this.interfaces2);
-  } catch (error) {
-    console.error("Ошибка загрузки интерфейсов:", error.message);
-  }
-}
-,
-
+    },
     async createConnection() {
       const [node1, node2] = this.selectedNodes;
       try {
-        const networkRes = await axios.post("http://localhost:5000/api/labs/network/create", {
-          name: `Net-${node1.name}-${node2.name}`,
-          left: 150,
-          top: 150,
-        });
+        const networkRes = await axios.post(
+          "http://localhost:5000/api/labs/network/create",
+          {
+            name: `Net-${node1.name}-${node2.name}`,
+            left: 150,
+            top: 150,
+          }
+        );
         const networkId = networkRes.data.data.id;
         console.log("🌐 Создана сеть:", networkId);
 
@@ -135,7 +144,10 @@ export default {
 
         this.closeModal();
       } catch (error) {
-        console.error("Ошибка создания соединения:", error.response?.data || error.message);
+        console.error(
+          "Ошибка создания соединения:",
+          error.response?.data || error.message
+        );
       }
     },
 
@@ -144,11 +156,11 @@ export default {
     },
 
     closeModal() {
-    this.showModal = false;
-    this.selectedNodes = [];
-    this.selectedIface1 = null;
-    this.selectedIface2 = null;
-    console.log("🔒 Модальное окно закрыто");
+      this.showModal = false;
+      this.selectedNodes = [];
+      this.selectedIface1 = null;
+      this.selectedIface2 = null;
+      console.log("🔒 Модальное окно закрыто");
     },
 
     resetSelection() {

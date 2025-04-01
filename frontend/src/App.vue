@@ -1,6 +1,5 @@
 <template>
   <v-app class="app">
-    <!-- Условно отображаем заголовок -->
     <TheHeader v-if="!isConsolePage" />
     <v-main>
       <router-view></router-view>
@@ -9,19 +8,18 @@
 </template>
 
 <script>
-import TheHeader from './components/TheHeader.vue';
+import TheHeader from "./components/TheHeader.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     TheHeader,
   },
   computed: {
-    // Проверяем, является ли текущая страница консолью
     isConsolePage() {
-      return this.$route.name === 'Console';
-    }
-  }
+      return this.$route.name === "Console";
+    },
+  },
 };
 </script>
 

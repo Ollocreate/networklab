@@ -12,20 +12,26 @@ const loginAndGetSession = async () => {
   try {
     console.log("🔹 Попытка авторизации...");
 
-    const response = await axios.post(`${EVE_NG_HOST}/api/auth/login`, {
-      username: EVE_NG_ADMIN,
-      password: EVE_NG_PASSWORD,
-    }, {
-      headers: { "Content-Type": "application/json" },
-      withCredentials: true,
-    });
+    const response = await axios.post(
+      `${EVE_NG_HOST}/api/auth/login`,
+      {
+        username: EVE_NG_ADMIN,
+        password: EVE_NG_PASSWORD,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      }
+    );
 
     console.log("🔹 Заголовки ответа:", response.headers);
 
     const cookies = response.headers["set-cookie"];
     if (!cookies) throw new Error("❌ Сервер не вернул cookie!");
 
-    const sessionCookie = cookies.find(cookieStr => cookieStr.startsWith("unetlab_session="));
+    const sessionCookie = cookies.find((cookieStr) =>
+      cookieStr.startsWith("unetlab_session=")
+    );
     if (!sessionCookie) throw new Error("❌ Cookie сессии не найден!");
 
     const parsedCookie = cookie.parse(sessionCookie);
@@ -39,24 +45,25 @@ const loginAndGetSession = async () => {
   }
 };
 
-
-// Создаем экземпляр Axios с автоматической аутентификацией
 const eveNgClient = axios.create({
   baseURL: EVE_NG_HOST,
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
 });
 
-eveNgClient.interceptors.request.use(async (config) => {
-  if (!sessionId) {
-    sessionId = await loginAndGetSession();  // Обновляем токен
-  }
-  
-  console.log("🔹 Перед отправкой запроса. Session ID:", sessionId);
+eveNgClient.interceptors.request.use(
+  async (config) => {
+    if (!sessionId) {
+      sessionId = await loginAndGetSession();
+    }
 
-  config.headers.Cookie = `unetlab_session=${sessionId}`;
-  return config;
-}, (error) => {
-  return Promise.reject(error);
-});
+    console.log("🔹 Перед отправкой запроса. Session ID:", sessionId);
+
+    config.headers.Cookie = `unetlab_session=${sessionId}`;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 module.exports = { eveNgClient, loginAndGetSession };

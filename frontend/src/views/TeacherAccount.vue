@@ -71,7 +71,7 @@ export default {
       } catch (error) {
         console.error("Ошибка загрузки материала:", error);
       }
-    }
+    },
   },
   async created() {
     await this.fetchUser();

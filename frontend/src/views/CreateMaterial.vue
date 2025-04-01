@@ -6,7 +6,11 @@
       <v-form @submit.prevent="submitMaterial">
         <v-text-field v-model="title" label="Название" required></v-text-field>
 
-        <v-textarea v-model="content" label="Текст материала" required></v-textarea>
+        <v-textarea
+          v-model="content"
+          label="Текст материала"
+          required
+        ></v-textarea>
 
         <v-select
           v-model="courseId"
@@ -26,9 +30,16 @@
           clearable
         ></v-select>
 
-        <v-file-input label="Загрузить файлы" multiple accept="image/*,video/*" @change="handleFiles"></v-file-input>
+        <v-file-input
+          label="Загрузить файлы"
+          multiple
+          accept="image/*,video/*"
+          @change="handleFiles"
+        ></v-file-input>
 
-        <v-btn type="submit" color="primary" :loading="loading">Создать материал</v-btn>
+        <v-btn type="submit" color="primary" :loading="loading"
+          >Создать материал</v-btn
+        >
       </v-form>
     </v-card>
   </v-container>
@@ -95,7 +106,18 @@ export default {
       store.dispatch("material/fetchCourses");
     });
 
-    return { title, content, courseId, parentId, files, loading, topics, courses, handleFiles, submitMaterial };
+    return {
+      title,
+      content,
+      courseId,
+      parentId,
+      files,
+      loading,
+      topics,
+      courses,
+      handleFiles,
+      submitMaterial,
+    };
   },
 };
 </script>

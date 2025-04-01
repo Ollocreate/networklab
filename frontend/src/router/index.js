@@ -1,56 +1,47 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from "vue-router";
 import AuthPage from "../views/AuthPage.vue";
 import StudentAccount from "../views/StudentAccount.vue";
 import TeacherAccount from "../views/TeacherAccount.vue";
-import TheConsole from '@/components/TheConsole.vue';
-import store from '../store';
+import TheConsole from "@/components/TheConsole.vue";
+import store from "../store";
 
 const routes = [
   { path: "/", component: AuthPage },
   {
-    path: '/home',
-    name: 'Home',
-    component: () => import('@/views/HomePage.vue'),
+    path: "/auth",
+    name: "Auth",
+    component: () => import("@/views/AuthPage.vue"),
   },
   {
-    path: '/',
-    redirect: '/home',
+    path: "/register",
+    name: "Register",
+    component: () => import("@/views/RegisterPage.vue"),
   },
   {
-    path: '/auth',
-    name: 'Auth',
-    component: () => import('@/views/AuthPage.vue'),
+    path: "/admin",
+    name: "AdminDashboard",
+    component: () => import("@/views/AdminDashboard.vue"),
   },
   {
-    path: '/register',
-    name: 'Register',
-    component: () => import('@/views/RegisterPage.vue'),
+    path: "/eve",
+    name: "SimulationPage",
+    component: () => import("@/views/SimulationPage.vue"),
   },
   {
-    path: '/admin',
-    name: 'AdminDashboard',
-    component: () => import('@/views/AdminDashboard.vue'),
-  },
-  {
-    path: '/eve',
-    name: 'SimulationPage',
-    component: () => import('@/views/SimulationPage.vue'),
-  },
-  {
-    path: '/console/:id',
-    name: 'Console',
+    path: "/console/:id",
+    name: "Console",
     component: TheConsole,
   },
   {
-    path: '/:courseSlug',
-    name: 'CoursePage',
-    component: () => import('@/views/MaterialPage.vue'),
+    path: "/:courseSlug",
+    name: "CoursePage",
+    component: () => import("@/views/MaterialPage.vue"),
     props: true,
   },
   {
-    path: '/materialcreate',
-    name: 'CreateMaterial',
-    component: () => import('@/views/CreateMaterial.vue'),
+    path: "/materialcreate",
+    name: "CreateMaterial",
+    component: () => import("@/views/CreateMaterial.vue"),
   },
   {
     path: "/student",

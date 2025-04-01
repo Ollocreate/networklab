@@ -27,7 +27,9 @@ export default {
   actions: {
     async fetchMaterials({ commit }, courseSlug) {
       try {
-        const response = await axios.get(`http://localhost:5000/api/materials/course/${courseSlug}`);
+        const response = await axios.get(
+          `http://localhost:5000/api/materials/course/${courseSlug}`
+        );
         commit("SET_MATERIALS", response.data);
       } catch (error) {
         console.error("Ошибка загрузки материалов", error);
@@ -36,7 +38,9 @@ export default {
 
     async fetchMaterial({ commit }, materialId) {
       try {
-        const response = await axios.get(`http://localhost:5000/api/materials/${materialId}`);
+        const response = await axios.get(
+          `http://localhost:5000/api/materials/${materialId}`
+        );
         commit("SET_SELECTED_MATERIAL", response.data);
       } catch (error) {
         console.error("Ошибка загрузки материала", error);
@@ -45,7 +49,9 @@ export default {
 
     async fetchTopics({ commit }) {
       try {
-        const response = await axios.get("http://localhost:5000/api/materials/topics");
+        const response = await axios.get(
+          "http://localhost:5000/api/materials/topics"
+        );
         commit("SET_TOPICS", response.data);
       } catch (error) {
         console.error("Ошибка загрузки тем:", error);
@@ -63,7 +69,9 @@ export default {
 
     async fetchUserMaterials({ commit }, userId) {
       try {
-        const response = await axios.get(`http://localhost:5000/api/materials/user/${userId}`);
+        const response = await axios.get(
+          `http://localhost:5000/api/materials/user/${userId}`
+        );
         commit("SET_MATERIALS", response.data);
       } catch (error) {
         console.error("Ошибка загрузки материалов пользователя", error);
@@ -74,7 +82,7 @@ export default {
       try {
         await axios.post("http://localhost:5000/api/materials", formData);
         dispatch("fetchMaterials");
-      } catch (error) { 
+      } catch (error) {
         if (error.response) {
           console.error("Ошибка на сервере:", error.response.data);
           alert("Ошибка при отправке данных на сервер.");

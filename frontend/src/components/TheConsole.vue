@@ -5,12 +5,12 @@
 </template>
 
 <script>
-import { Terminal } from 'xterm';
-import { FitAddon } from 'xterm-addon-fit';
-import 'xterm/css/xterm.css';
+import { Terminal } from "xterm";
+import { FitAddon } from "xterm-addon-fit";
+import "xterm/css/xterm.css";
 
 export default {
-  name: 'TheConsole',
+  name: "TheConsole",
   data() {
     return {
       terminal: null,
@@ -41,7 +41,7 @@ export default {
       this.terminal.write("Ошибка подключения\r\n");
     };
 
-    this.terminal.onData(data => {
+    this.terminal.onData((data) => {
       if (this.socket.readyState === WebSocket.OPEN) {
         this.terminal.write(data);
         this.socket.send(data);

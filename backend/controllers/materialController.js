@@ -4,13 +4,15 @@ const { use } = require("../routes/courseRoutes");
 exports.getMaterialsByCourse = async (req, res) => {
   try {
     const { slug } = req.params;
-    
+
     const course = await Course.findOne({ where: { slug } });
     if (!course) {
       return res.status(404).json({ error: "Курс не найден" });
     }
 
-    const materials = await Material.findAll({ where: { courseId: course.id } });
+    const materials = await Material.findAll({
+      where: { courseId: course.id },
+    });
     res.json(materials);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -46,7 +48,7 @@ exports.getUserMaterials = async (req, res) => {
 exports.getTopics = async (req, res) => {
   try {
     const topics = await Material.findAll({
-      attributes: ["id", "title"], 
+      attributes: ["id", "title"],
     });
     res.json(topics);
   } catch (error) {
@@ -61,7 +63,9 @@ exports.createMaterial = async (req, res) => {
     const userId = req.user.id;
 
     if (!title || !content || !courseId) {
-      return res.status(400).json({ error: "Необходимо передать title, content и courseId" });
+      return res
+        .status(400)
+        .json({ error: "Необходимо передать title, content и courseId" });
     }
 
     const course = await Course.findByPk(Number(courseId));
@@ -69,9 +73,9 @@ exports.createMaterial = async (req, res) => {
       return res.status(400).json({ error: "Выбранный курс не существует" });
     }
 
-    const uploadedFiles = req.files.map(file => ({
+    const uploadedFiles = req.files.map((file) => ({
       filename: file.filename,
-      path: `/uploads/${file.filename}`
+      path: `/uploads/${file.filename}`,
     }));
 
     console.log("Сохранение в БД mediaUrls:", uploadedFiles);
@@ -82,7 +86,8 @@ exports.createMaterial = async (req, res) => {
       courseId: Number(courseId),
       parentId: parentId ? Number(parentId) : null,
       order: 0,
-      mediaUrls: uploadedFiles.length > 0 ? JSON.stringify(uploadedFiles) : null,
+      mediaUrls:
+        uploadedFiles.length > 0 ? JSON.stringify(uploadedFiles) : null,
       userId,
     });
 

@@ -5,7 +5,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const generateToken = (user) => {
-  return jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "24h" });
+  return jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
+    expiresIn: "24h",
+  });
 };
 
 exports.register = async (req, res) => {
@@ -21,11 +23,13 @@ exports.register = async (req, res) => {
       await TeacherRequest.create({
         username,
         email,
-        password, 
+        password,
         status: "pending",
       });
 
-      return res.json({ message: "Заявка на преподавателя отправлена на рассмотрение" });
+      return res.json({
+        message: "Заявка на преподавателя отправлена на рассмотрение",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -49,13 +53,17 @@ exports.register = async (req, res) => {
 
       console.log(`📂 Папка '${username}' успешно создана в EVE-NG`);
     } catch (error) {
-      console.error("❌ Ошибка при создании папки в EVE-NG:", error.response?.data || error.message);
-      return res.status(500).json({ error: "Ошибка при создании папки в EVE-NG" });
+      console.error(
+        "❌ Ошибка при создании папки в EVE-NG:",
+        error.response?.data || error.message
+      );
+      return res
+        .status(500)
+        .json({ error: "Ошибка при создании папки в EVE-NG" });
     }
 
     const token = generateToken(newUser);
     res.json({ token, user: { id: newUser.id, username, email, role } });
-
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -79,12 +87,16 @@ exports.login = async (req, res) => {
     }
 
     if (user.role === "teacher" && !user.approved) {
-      return res.status(403).json({ error: "Ваш аккаунт ещё не подтверждён администратором" });
+      return res
+        .status(403)
+        .json({ error: "Ваш аккаунт ещё не подтверждён администратором" });
     }
 
     const token = generateToken(user);
-    res.json({ token, user: { id: user.id, username: user.username, email, role: user.role } });
-
+    res.json({
+      token,
+      user: { id: user.id, username: user.username, email, role: user.role },
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

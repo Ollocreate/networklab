@@ -12,7 +12,6 @@
         </tr>
       </thead>
       <tbody>
-        <!-- Неодобренные заявки -->
         <tr v-for="request in pendingRequests" :key="request.id">
           <td>{{ request.id }}</td>
           <td>{{ request.email }}</td>
@@ -24,18 +23,16 @@
           </td>
         </tr>
 
-        <!-- Одобренные заявки (отображаются внизу) -->
         <tr v-for="request in approvedRequests" :key="request.id">
           <td>{{ request.id }}</td>
           <td>{{ request.email }}</td>
           <td>{{ request.username }}</td>
           <td>{{ request.status }}</td>
-          <td></td> <!-- Для одобренных заявок нет кнопок -->
+          <td></td>
         </tr>
       </tbody>
     </v-table>
 
-    <!-- Snackbar для уведомлений -->
     <v-snackbar v-model="snackbar" :timeout="3000" color="success">
       Заявка одобрена!
     </v-snackbar>
@@ -49,19 +46,22 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      requests: [], 
+      requests: [],
       snackbar: false,
     };
   },
   computed: {
-    ...mapGetters(["getToken"]), // Получаем токен из Vuex
+    ...mapGetters(["getToken"]),
 
     pendingRequests() {
-      return this.requests.filter(request => request.status === 'pending');
+      return this.requests.filter((request) => request.status === "pending");
     },
 
     approvedRequests() {
-      return this.requests.filter(request => request.status === 'approved' || request.status === 'rejected');
+      return this.requests.filter(
+        (request) =>
+          request.status === "approved" || request.status === "rejected"
+      );
     },
   },
   async created() {
@@ -70,9 +70,12 @@ export default {
   methods: {
     async fetchRequests() {
       try {
-        const response = await axios.get("http://localhost:5000/api/admin/requests", {
-          headers: { Authorization: `Bearer ${this.getToken}` } 
-        });
+        const response = await axios.get(
+          "http://localhost:5000/api/admin/requests",
+          {
+            headers: { Authorization: `Bearer ${this.getToken}` },
+          }
+        );
         this.requests = response.data;
       } catch (error) {
         alert("Ошибка загрузки заявок");
@@ -81,11 +84,17 @@ export default {
 
     async approve(requestId) {
       try {
-        await axios.post("http://localhost:5000/api/admin/approve", { requestId }, {
-          headers: { Authorization: `Bearer ${this.getToken}` }
-        });
+        await axios.post(
+          "http://localhost:5000/api/admin/approve",
+          { requestId },
+          {
+            headers: { Authorization: `Bearer ${this.getToken}` },
+          }
+        );
 
-        this.requests = this.requests.filter(request => request.id !== requestId);
+        this.requests = this.requests.filter(
+          (request) => request.id !== requestId
+        );
         this.snackbar = true;
       } catch (error) {
         alert("Ошибка при одобрении заявки");
@@ -94,11 +103,17 @@ export default {
 
     async reject(requestId) {
       try {
-        await axios.post("http://localhost:5000/api/admin/reject", { requestId }, {
-          headers: { Authorization: `Bearer ${this.getToken}` },
-        });
+        await axios.post(
+          "http://localhost:5000/api/admin/reject",
+          { requestId },
+          {
+            headers: { Authorization: `Bearer ${this.getToken}` },
+          }
+        );
 
-        this.requests = this.requests.filter(request => request.id !== requestId);
+        this.requests = this.requests.filter(
+          (request) => request.id !== requestId
+        );
       } catch (error) {
         alert("Ошибка при отклонении заявки");
       }
@@ -107,7 +122,4 @@ export default {
 };
 </script>
 
-
-<style scoped>
-/* Стили для вашего компонента */
-</style>
+<style scoped></style>

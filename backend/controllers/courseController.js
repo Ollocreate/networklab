@@ -29,9 +29,9 @@ exports.getCoursesByUser = async (req, res) => {
       include: [{ model: db.Course }],
     });
 
-    res.json(userCourses.map(uc => uc.Course)); 
+    res.json(userCourses.map((uc) => uc.Course));
   } catch (error) {
     console.error("Ошибка загрузки курсов пользователя:", error);
     res.status(500).send("Ошибка сервера");
   }
-}
+};

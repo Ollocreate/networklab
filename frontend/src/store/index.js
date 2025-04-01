@@ -48,7 +48,7 @@ export default createStore({
         state.user = JSON.parse(userStr);
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
-    }
+    },
   },
 
   actions: {
@@ -60,11 +60,11 @@ export default createStore({
       try {
         const response = await axios.post(`${API_URL}/login`, credentials);
         const { token, user } = response.data;
-        
+
         if (!token || !user) {
           throw new Error("Неверный формат ответа от сервера");
         }
-        
+
         commit("setAuth", { token, user });
         return response.data;
       } catch (error) {
@@ -74,24 +74,27 @@ export default createStore({
 
     async fetchUser({ commit, state }) {
       if (!state.token) return;
-      
+
       try {
-        let profileUrl = "/profile"; // Общий путь по умолчанию
-    
+        let profileUrl = "/profile";
+
         if (state.user && state.user.role === "student") {
-          profileUrl = "/profile/student";  // Путь для студента
+          profileUrl = "/profile/student";
         } else if (state.user && state.user.role === "teacher") {
-          profileUrl = "/profile/teacher";  // Путь для преподавателя
+          profileUrl = "/profile/teacher";
         }
-    
+
         const response = await axios.get(`${API_URL}${profileUrl}`, {
-          headers: { Authorization: `Bearer ${state.token}` }
+          headers: { Authorization: `Bearer ${state.token}` },
         });
-    
-        commit("setUser", { user: response.data.user, courses: response.data.courses });
+
+        commit("setUser", {
+          user: response.data.user,
+          courses: response.data.courses,
+        });
       } catch (error) {
         console.error("Ошибка загрузки пользователя:", error);
-        commit("logout"); // Если токен невалиден — разлогиниваем
+        commit("logout");
       }
     },
 
@@ -108,6 +111,6 @@ export default createStore({
   },
 
   modules: {
-    material, // Подключаем `material` как Vuex-модуль
+    material,
   },
 });

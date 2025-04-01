@@ -17,9 +17,9 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: "http://localhost:8080", // Разрешить запросы с фронтенда
-    methods: ["GET", "POST", "PUT", "DELETE"], // Разрешенные методы
-    credentials: true, // Разрешить передачу кук и заголовков авторизации
+    origin: "http://localhost:8080",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   })
 );
 

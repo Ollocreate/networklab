@@ -1,5 +1,9 @@
 const express = require("express");
-const { getCourses, createCourse, getCoursesByUser } = require("../controllers/courseController");
+const {
+  getCourses,
+  createCourse,
+  getCoursesByUser,
+} = require("../controllers/courseController");
 
 const router = express.Router();
 

@@ -9,8 +9,8 @@ wss.on("connection", async (ws) => {
   const connection = new Telnet();
 
   const telnetParams = {
-    host: "192.168.116.128", // Ваш IP-адрес
-    port: 32769, // Ваш порт
+    host: "192.168.116.128",
+    port: 32769,
     negotiationMandatory: false,
     timeout: 1500,
   };
@@ -19,23 +19,19 @@ wss.on("connection", async (ws) => {
     await connection.connect(telnetParams);
     console.log("✅ Telnet соединение установлено");
 
-    // Обрабатываем данные от Telnet и пересылаем клиенту по WebSocket
     connection.on("data", (data) => {
       ws.send(data.toString());
     });
 
     let commandBuffer = "";
 
-    // Получаем команды из WebSocket
     ws.on("message", async (message) => {
       try {
         commandBuffer += message;
-
-        // Проверяем на завершение команды (например, символ новой строки)
         if (commandBuffer.includes("\r") || commandBuffer.includes("\n")) {
           console.log("💻 Отправка команды в Telnet:", commandBuffer.trim());
           await connection.send(commandBuffer);
-          commandBuffer = ""; // Очищаем буфер после отправки
+          commandBuffer = "";
         }
       } catch (err) {
         console.error("Ошибка отправки команды в Telnet:", err);
