@@ -1,34 +1,33 @@
 <template>
   <v-app class="app">
-    <TheHeader />
+    <!-- Условно отображаем заголовок -->
+    <TheHeader v-if="!isConsolePage" />
     <v-main>
-      <!-- <TheSidebar /> -->
       <router-view></router-view>
     </v-main>
-    <!-- <TheFooter /> -->
   </v-app>
 </template>
 
 <script>
-import TheHeader from './components/TheHeader.vue'; 
-// import TheFooter from './components/TheFooter.vue';
-// import TheSidebar from './components/TheSidebar.vue';
+import TheHeader from './components/TheHeader.vue';
 
 export default {
   name: 'App',
   components: {
     TheHeader,
-    // TheFooter,
-    // TheSidebar,
+  },
+  computed: {
+    // Проверяем, является ли текущая страница консолью
+    isConsolePage() {
+      return this.$route.name === 'Console';
+    }
   }
-
 };
-
 </script>
 
 <style>
- .app {
-   max-width: 1000px;
-   margin: 0 auto;
- }
+.app {
+  max-width: 1000px;
+  margin: 0 auto;
+}
 </style>

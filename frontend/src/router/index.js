@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import AuthPage from "../views/AuthPage.vue";
 import StudentAccount from "../views/StudentAccount.vue";
 import TeacherAccount from "../views/TeacherAccount.vue";
+import TheConsole from '@/components/TheConsole.vue';
 import store from '../store';
 
 const routes = [
@@ -34,6 +35,11 @@ const routes = [
     path: '/eve',
     name: 'SimulationPage',
     component: () => import('@/views/SimulationPage.vue'),
+  },
+  {
+    path: '/console/:id',
+    name: 'Console',
+    component: TheConsole,
   },
   {
     path: '/:courseSlug',
