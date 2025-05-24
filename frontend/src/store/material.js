@@ -25,10 +25,15 @@ export default {
   },
 
   actions: {
-    async fetchMaterials({ commit }, courseSlug) {
+    async fetchMaterials({ commit, rootState }, courseSlug) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/materials/course/${courseSlug}`
+          `http://localhost:5000/api/materials/course/${courseSlug}`,
+          {
+        headers: {
+          Authorization: `Bearer ${rootState.token}`,
+        },
+      }
         );
         commit("SET_MATERIALS", response.data);
       } catch (error) {
@@ -36,10 +41,15 @@ export default {
       }
     },
 
-    async fetchMaterial({ commit }, materialId) {
+    async fetchMaterial({ commit, rootState }, materialId) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/materials/${materialId}`
+          `http://localhost:5000/api/materials/${materialId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${rootState.token}`,
+            },
+          }
         );
         commit("SET_SELECTED_MATERIAL", response.data);
       } catch (error) {

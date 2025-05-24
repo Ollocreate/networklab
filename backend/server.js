@@ -11,6 +11,7 @@ const materialRoutes = require("./routes/materialRoutes");
 const labRoutes = require("./routes/labRoutes");
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const statisticsRoutes = require("./routes/statisticRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -33,6 +34,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/materials", materialRoutes);
 app.use("/api/labs", labRoutes);
+
+app.use("/api/statistics", statisticsRoutes);
 
 sequelize.sync().then(() => console.log("Database synced"));
 

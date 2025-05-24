@@ -1,4 +1,4 @@
-const { Material, Course, Op } = require("../models");
+const { Material, Course, Statistic} = require("../models");
 const { use } = require("../routes/courseRoutes");
 
 exports.getMaterialsByCourse = async (req, res) => {
@@ -12,8 +12,10 @@ exports.getMaterialsByCourse = async (req, res) => {
 
     const materials = await Material.findAll({
       where: { courseId: course.id },
+      attributes: ["id", "title", "content", "parentId", "mediaUrls"],
     });
     res.json(materials);
+    console.log("Материалы по курсу загружены");
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -26,8 +28,28 @@ exports.getMaterialById = async (req, res) => {
 
     if (!material) return res.status(404).json({ error: "Материал не найден" });
 
+    if (req.user) {
+      const existingStat = await Statistic.findOne({
+        where: {
+          materialId: material.id,
+          userId: req.user.id,
+        },
+      });
+
+      if (!existingStat) {
+        await Statistic.create({ materialId: material.id, userId: req.user.id });
+        console.log("Уникальная статистика сохранена");
+      } else {
+        console.log("Запись уже существует — статистика не сохраняется повторно");
+      }
+    } else {
+      console.log("Пользователь не авторизован");
+    }
+
     res.json(material);
+    console.log("Материал по id загружен");
   } catch (error) {
+    console.error("Ошибка при получении материала:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -48,7 +70,7 @@ exports.getUserMaterials = async (req, res) => {
 exports.getTopics = async (req, res) => {
   try {
     const topics = await Material.findAll({
-      attributes: ["id", "title"],
+      attributes: ["id", "title", "courseId"],
     });
     res.json(topics);
   } catch (error) {

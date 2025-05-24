@@ -41,6 +41,10 @@
     <v-card v-if="user && user.role === 'teacher'">
       <v-btn color="primary" to="/materialcreate">Загрузить материал</v-btn>
     </v-card>
+
+    <v-card>
+      <v-btn color="primary" to="/stats">Посмотреть статистику</v-btn>
+    </v-card>
   </v-container>
 </template>
 

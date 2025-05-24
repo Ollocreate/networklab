@@ -28,6 +28,10 @@
     <v-alert v-if="!courses || courses.length === 0" type="info">
       Вы пока не подписаны ни на один курс.
     </v-alert>
+
+    <v-card>
+      <v-btn color="primary" to="/stats">Посмотреть статистику</v-btn>
+    </v-card>
   </v-container>
 </template>
 

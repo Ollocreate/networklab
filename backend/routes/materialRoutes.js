@@ -19,6 +19,6 @@ router.post(
 router.get("/course/:slug", getMaterialsByCourse);
 router.get("/user/:userId", getUserMaterials);
 router.get("/topics", getTopics);
-router.get("/:id", getMaterialById);
+router.get("/:id", authMiddleware(), getMaterialById);
 
 module.exports = router;

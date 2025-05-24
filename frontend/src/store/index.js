@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 import axios from "axios";
 import material from "./material";
+import statistic from "./statistic";
 
 const API_URL = "http://localhost:5000/api/auth";
 
@@ -112,5 +113,6 @@ export default createStore({
 
   modules: {
     material,
+    statistic
   },
 });

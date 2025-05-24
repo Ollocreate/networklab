@@ -4,7 +4,7 @@
       <v-list-item
         v-for="material in materials"
         :key="material.id"
-        @click="selectMaterial(material.id)"
+        @click="selectMaterial(material.id)" 
       >
         {{ material.title }}
       </v-list-item>

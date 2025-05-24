@@ -98,6 +98,7 @@ exports.stopAllNodes = async (req, res) => {
   }
 };
 
+
 exports.getNodeInterfaces = async (req, res) => {
   try {
     const { nodeId } = req.params;

@@ -1,9 +1,7 @@
 <template>
   <v-container>
-    <v-card class="pa-5">
-      <v-card-title>Добавить новый материал</v-card-title>
-
       <v-form @submit.prevent="submitMaterial">
+        <h2>Добавить новый материал</h2>
         <v-text-field v-model="title" label="Название" required></v-text-field>
 
         <v-textarea
@@ -22,8 +20,9 @@
         ></v-select>
 
         <v-select
+          v-if="topics.length > 0"
           v-model="parentId"
-          :items="topics"
+          :items="filteredTopics"
           item-title="title"
           item-value="id"
           label="Родительская тема"
@@ -41,7 +40,6 @@
           >Создать материал</v-btn
         >
       </v-form>
-    </v-card>
   </v-container>
 </template>
 
@@ -49,6 +47,7 @@
 import { ref, onMounted, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { watch } from "vue";
 
 export default {
   name: "CreateMaterial",
@@ -64,8 +63,16 @@ export default {
     const loading = ref(false);
 
     const topics = computed(() => store.state.material.topics);
+    const filteredTopics = computed(() => {
+      if (!courseId.value) return [];
+      return topics.value.filter((topic) => topic.courseId === courseId.value);
+    });
+
     const courses = computed(() => store.state.material.courses);
 
+    watch(courseId, () => {
+      parentId.value = null;
+    });
     const handleFiles = (event) => {
       files.value = event.target.files;
     };
@@ -101,10 +108,10 @@ export default {
       }
     };
 
-    onMounted(() => {
-      store.dispatch("material/fetchTopics");
-      store.dispatch("material/fetchCourses");
-    });
+    onMounted(async () => {
+      await store.dispatch("material/fetchCourses");
+      await store.dispatch("material/fetchTopics");
+    }); 
 
     return {
       title,
@@ -114,6 +121,7 @@ export default {
       files,
       loading,
       topics,
+      filteredTopics,
       courses,
       handleFiles,
       submitMaterial,
@@ -121,3 +129,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.v-form {
+  padding-top: 30px;
+}
+</style>

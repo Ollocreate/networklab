@@ -4,6 +4,7 @@ import StudentAccount from "../views/StudentAccount.vue";
 import TeacherAccount from "../views/TeacherAccount.vue";
 import TheConsole from "@/components/TheConsole.vue";
 import store from "../store";
+import StatisticPage from "@/views/StatisticPage.vue";
 
 const routes = [
   { path: "/", component: AuthPage },
@@ -52,6 +53,10 @@ const routes = [
     path: "/teacher",
     component: TeacherAccount,
     meta: { requiresAuth: true, role: "teacher" },
+  },
+    {
+    path: "/stats",
+    component: StatisticPage,
   },
 ];
 
