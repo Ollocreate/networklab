@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import StudentAccount from "../views/StudentAccount.vue";
 import TeacherAccount from "../views/TeacherAccount.vue";
-import TheConsole from "@/components/TheConsole.vue";
+import TheConsole from "@/components/lab/TheConsole.vue";
 import store from "../store";
 import StatisticPage from "@/views/StatisticPage.vue";
 

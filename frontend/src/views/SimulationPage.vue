@@ -31,11 +31,11 @@
 
 <script>
 import axios from "axios";
-import TheConsole from "../components/TheConsole.vue";
-import WireTool from "../components/WireTool.vue";
-import LabCanvas from "../components/LabCanvas.vue";
-import ContextMenu from "../components/ContextMenu.vue";
-import TaskTooltip from "../components/TaskTooltip.vue";
+import TheConsole from "../components/lab/TheConsole.vue";
+import WireTool from "../components/lab/WireTool.vue";
+import LabCanvas from "../components/lab/LabCanvas.vue";
+import ContextMenu from "../components/lab/ContextMenu.vue";
+import TaskTooltip from "../components/lab/TaskTooltip.vue";
 
 export default {
   name: "SimulationPage",

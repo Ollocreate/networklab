@@ -8,8 +8,8 @@
 
 <script>
 import { mapGetters } from "vuex";
-import TeacherStatistic from "../components/TeacherStats.vue";
-import StudentStatistic from "../components/StudentStats.vue";
+import TeacherStatistic from "../components/stats/TeacherStats.vue";
+import StudentStatistic from "../components/stats/StudentStats.vue";
 
 export default {
   components: {

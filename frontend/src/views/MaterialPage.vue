@@ -19,8 +19,8 @@
 
 <script>
 import { mapState } from "vuex";
-import MaterialsList from "../components/MaterialsList.vue";
-import MaterialView from "../components/MaterialView.vue";
+import MaterialsList from "../components/material/MaterialsList.vue";
+import MaterialView from "../components/material/MaterialView.vue";
 
 export default {
   components: {
