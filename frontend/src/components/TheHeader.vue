@@ -1,9 +1,12 @@
 <template>
   <v-app-bar app color="primary" dark>
-    <v-toolbar-title>Networklab</v-toolbar-title>
+    <router-link
+      to="/"
+      style="text-decoration: none; color: inherit; margin-left: 1em"
+    >
+      <v-toolbar-title class="cursor-pointer">Networklab</v-toolbar-title>
+    </router-link>
     <v-spacer></v-spacer>
-
-    <v-btn to="/home" text>Home</v-btn>
 
     <template v-if="!isAuthenticated">
       <v-btn to="/auth" text>Войти</v-btn>
@@ -36,7 +39,7 @@ export default {
 
     async logout() {
       await this.$store.dispatch("logout");
-      this.$router.push("/home");
+      this.$router.push("/");
     },
   },
 };

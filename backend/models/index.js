@@ -4,6 +4,7 @@ const Course = require("./Course");
 const Material = require("./material");
 const TeacherRequest = require("./teacherRequest");
 const Statistic = require("./statistic");
+const Task = require("./task");
 
 User.belongsToMany(Course, {
   through: "UserCourses",
@@ -28,4 +29,19 @@ Material.belongsTo(User, { foreignKey: "userId", as: "author" });
 Statistic.belongsTo(Material, { foreignKey: "materialId", as: "material" });
 Statistic.belongsTo(User, { foreignKey: "userId", as: "user" });
 
-module.exports = { sequelize, User, Course, TeacherRequest, Material, Statistic };
+Material.hasMany(Task, {
+  foreignKey: "materialId",
+  as: "tasks",
+  onDelete: "CASCADE",
+});
+Task.belongsTo(Material, { foreignKey: "materialId", as: "material" });
+
+module.exports = {
+  sequelize,
+  User,
+  Course,
+  TeacherRequest,
+  Material,
+  Statistic,
+  Task,
+};

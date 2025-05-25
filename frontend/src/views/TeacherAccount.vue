@@ -45,6 +45,10 @@
     <v-card>
       <v-btn color="primary" to="/stats">Посмотреть статистику</v-btn>
     </v-card>
+
+    <v-card>
+      <v-btn color="primary" to="/enroll">Записать на курс</v-btn>
+    </v-card>
   </v-container>
 </template>
 

@@ -1,7 +1,10 @@
 <template>
-  <v-card v-if="selectedMaterial">
-    <v-card-title>{{ selectedMaterial.title }}</v-card-title>
-    <v-card-text v-html="selectedMaterial.content"></v-card-text>
+  <v-card v-if="selectedMaterial" style="width: 90%; margin: auto">
+    <v-card-title class="full-title">{{ selectedMaterial.title }}</v-card-title>
+    <v-card-text
+      style="white-space: pre-wrap"
+      v-html="selectedMaterial.content"
+    ></v-card-text>
 
     <div v-if="parsedMediaUrls.length">
       <template v-for="(file, index) in parsedMediaUrls" :key="index">
@@ -19,8 +22,17 @@
       </template>
     </div>
 
-    <v-btn @click="prevMaterial" :disabled="prevId === null">← Назад</v-btn>
-    <v-btn @click="nextMaterial" :disabled="nextId === null">Вперёд →</v-btn>
+    <div class="button-container">
+      <div class="nav-buttons">
+        <v-btn @click="prevMaterial" :disabled="prevId === null">← Назад</v-btn>
+        <v-btn @click="nextMaterial" :disabled="nextId === null"
+          >Вперёд →</v-btn
+        >
+      </div>
+      <v-btn v-if="hasTasks" @click="startTask" color="primary"
+        >Начать задание</v-btn
+      >
+    </div>
   </v-card>
 </template>
 
@@ -59,6 +71,13 @@ export default {
         ? this.materials[index + 1].id
         : null;
     },
+    hasTasks() {
+      return (
+        this.selectedMaterial &&
+        this.selectedMaterial.tasks &&
+        this.selectedMaterial.tasks.length > 0
+      );
+    },
   },
 
   methods: {
@@ -88,6 +107,32 @@ export default {
         return "unknown";
       }
     },
+
+    startTask() {
+      this.$router.push("/eve");
+      console.log('Кнопка "начать задание" нажата');
+    },
   },
 };
 </script>
+
+<style scoped>
+.full-title {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-break: break-word;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 8px;
+}
+</style>

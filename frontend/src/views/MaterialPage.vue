@@ -1,11 +1,11 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="3">
+      <v-col cols="0">
         <MaterialsList />
       </v-col>
 
-      <v-col cols="9">
+      <v-col cols="12">
         <template v-if="materials.length">
           <MaterialView />
         </template>

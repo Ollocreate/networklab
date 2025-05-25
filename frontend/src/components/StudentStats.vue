@@ -2,7 +2,11 @@
   <div>
     <div class="mb-4">
       <label>Курс:</label>
-      <select v-if="courses.length" v-model="selectedCourseId" class="border p-2 rounded">
+      <select
+        v-if="courses.length"
+        v-model="selectedCourseId"
+        class="border p-2 rounded"
+      >
         <option v-for="course in courses" :key="course.id" :value="course.id">
           {{ course.title }}
         </option>

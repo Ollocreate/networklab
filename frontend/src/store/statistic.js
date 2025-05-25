@@ -7,6 +7,7 @@ state: {
   students: [],
   statistics: [],
   totalMaterials: null,
+  availableStudents: [],
 },
 
 mutations: {
@@ -21,6 +22,10 @@ mutations: {
   },
   SET_TOTAL_MATERIALS(state, materials) {
     state.totalMaterials = materials;
+  },
+  SET_AVAILABLE_STUDENTS(state, students) {
+    console.log("Полученные доступные студенты:", students);
+    state.availableStudents = students;
   },
 },
 
@@ -83,6 +88,34 @@ fetchStudents({ commit, rootState }, courseId) {
     .catch((error) => {
       console.error("Ошибка при загрузке студентов", error);
     });
-}
 },
+
+fetchAvailableStudents({ commit, rootState }, courseId) {
+  return axios
+    .get(`http://localhost:5000/api/courses/${courseId}/available-students`, {
+      headers: {
+        Authorization: `Bearer ${rootState.token}`,
+      },
+    })
+    .then((response) => {
+      commit("SET_AVAILABLE_STUDENTS", response.data.students);
+    })
+    .catch((error) => {
+      console.error("Ошибка при загрузке доступных студентов", error);
+    });
+},
+
+  enrollStudentOnCourse({ rootState }, { courseId, studentId }) {
+    return axios.post(
+      'http://localhost:5000/api/users/enroll',
+      { courseId, studentId },
+      {
+        headers: {
+          Authorization: `Bearer ${rootState.token}`,
+        },
+      }
+    );
+  },
+},
+
 }

@@ -1,4 +1,5 @@
 const { Course, User } = require("../models");
+const { Op } = require("sequelize");
 
 exports.getCourses = async (req, res) => {
   try {
@@ -60,5 +61,36 @@ exports.getStudentsForCourse = async (req, res) => {
   }
 };
 
+exports.getAvailableStudentsForCourse = async (req, res) => {
+  const { courseId } = req.params;
 
+  try {
+    const course = await Course.findByPk(courseId, {
+      include: {
+        model: User,
+        as: "users",
+        attributes: ["id"],
+        through: { attributes: [] },
+      },
+    });
 
+    if (!course) {
+      return res.status(404).json({ error: "Курс не найден" });
+    }
+
+    const enrolledIds = course.users.map((user) => user.id);
+
+    const availableStudents = await User.findAll({
+      where: {
+        role: "student",
+        id: { [Op.notIn]: enrolledIds },
+      },
+      attributes: ["id", "username", "email"],
+    });
+
+    res.json({ students: availableStudents });
+  } catch (error) {
+    console.error("Ошибка получения доступных студентов:", error);
+    res.status(500).json({ error: "Ошибка сервера" });
+  }
+};

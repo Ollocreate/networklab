@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import AuthPage from "../views/AuthPage.vue";
 import StudentAccount from "../views/StudentAccount.vue";
 import TeacherAccount from "../views/TeacherAccount.vue";
 import TheConsole from "@/components/TheConsole.vue";
@@ -7,7 +6,11 @@ import store from "../store";
 import StatisticPage from "@/views/StatisticPage.vue";
 
 const routes = [
-  { path: "/", component: AuthPage },
+  {
+  path: '/',
+  name: 'Home',
+  component: () => import('@/views/HomePage.vue')
+  },
   {
     path: "/auth",
     name: "Auth",
@@ -57,6 +60,10 @@ const routes = [
     {
     path: "/stats",
     component: StatisticPage,
+  },
+      {
+    path: "/enroll",
+    component: () => import("@/views/EnrollPage.vue"),
   },
 ];
 

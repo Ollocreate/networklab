@@ -2,7 +2,11 @@
   <div>
     <div class="mb-4">
       <label>Курс:</label>
-      <select v-if="courses.length" v-model="selectedCourseId" class="border p-2 rounded">
+      <select
+        v-if="courses.length"
+        v-model="selectedCourseId"
+        class="border p-2 rounded"
+      >
         <option v-for="course in courses" :key="course.id" :value="course.id">
           {{ course.title }}
         </option>
@@ -12,7 +16,11 @@
     <div v-if="students && students.length" class="mb-4">
       <label>Студент:</label>
       <select v-model="selectedStudentId" class="border p-2 rounded">
-        <option v-for="student in students" :key="student.id" :value="student.id">
+        <option
+          v-for="student in students"
+          :key="student.id"
+          :value="student.id"
+        >
           {{ student.username }} ({{ student.email }})
         </option>
       </select>
@@ -44,7 +52,12 @@ export default {
     };
   },
   computed: {
-    ...mapState("statistic", ["courses", "students", "statistics", "totalMaterials"]),
+    ...mapState("statistic", [
+      "courses",
+      "students",
+      "statistics",
+      "totalMaterials",
+    ]),
     studentStats() {
       if (!this.selectedStudentId || !Array.isArray(this.statistics)) return [];
       return this.statistics.filter((s) => s.userId === this.selectedStudentId);
@@ -59,23 +72,30 @@ export default {
     },
   },
   methods: {
-    ...mapActions("statistic", ["fetchCourses", "fetchStatistics", "fetchStudents"]),
+    ...mapActions("statistic", [
+      "fetchCourses",
+      "fetchStatistics",
+      "fetchStudents",
+    ]),
     formatDate(date) {
       return new Date(date).toLocaleString("ru-RU");
     },
   },
   watch: {
-  selectedCourseId(newId) {
-    if (newId) {
-      this.fetchStudents(newId);
-    }
+    selectedCourseId(newId) {
+      if (newId) {
+        this.fetchStudents(newId);
+      }
+    },
+    selectedStudentId(newId) {
+      if (newId && this.selectedCourseId) {
+        this.fetchStatistics({
+          studentId: newId,
+          courseId: this.selectedCourseId,
+        });
+      }
+    },
   },
-  selectedStudentId(newId) {
-    if (newId && this.selectedCourseId) {
-      this.fetchStatistics({ studentId: newId, courseId: this.selectedCourseId });
-    }
-  },
-},
   mounted() {
     this.fetchCourses();
   },

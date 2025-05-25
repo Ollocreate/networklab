@@ -59,7 +59,9 @@ exports.getStatisticsForCourseAndStudent = async (req, res) => {
       return res.status(404).json({ error: "Курс не найден" });
     }
 
-    const student = course.users.find((user) => user.id === parseInt(studentId));
+    const student = course.users.find(
+      (user) => user.id === parseInt(studentId)
+    );
 
     if (!student) {
       return res.status(404).json({ error: "Студент не записан на этот курс" });

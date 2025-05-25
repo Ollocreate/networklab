@@ -1,7 +1,9 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-  const Statistic = sequelize.define("Statistic", {
+const Statistic = sequelize.define(
+  "Statistic",
+  {
     materialId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -11,11 +13,11 @@ const sequelize = require("../config/database");
       allowNull: false,
     },
   },
-    {
+  {
     timestamps: true,
     createdAt: true,
-    updatedAt: false
-    }
-  );
+    updatedAt: false,
+  }
+);
 
 module.exports = Statistic;

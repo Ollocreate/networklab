@@ -1,4 +1,4 @@
-const { Material, Course, Statistic} = require("../models");
+const { Material, Course, Statistic, Task } = require("../models");
 const { use } = require("../routes/courseRoutes");
 
 exports.getMaterialsByCourse = async (req, res) => {
@@ -24,7 +24,15 @@ exports.getMaterialsByCourse = async (req, res) => {
 exports.getMaterialById = async (req, res) => {
   try {
     const { id } = req.params;
-    const material = await Material.findByPk(id);
+    const material = await Material.findByPk(id, {
+      include: [
+        {
+          model: Task,
+          as: "tasks", // Указываем алиас, соответствующий связи hasMany
+          attributes: ["id", "name"], // Выбираем только нужные поля, например, id и title
+        },
+      ],
+    });
 
     if (!material) return res.status(404).json({ error: "Материал не найден" });
 
@@ -37,10 +45,15 @@ exports.getMaterialById = async (req, res) => {
       });
 
       if (!existingStat) {
-        await Statistic.create({ materialId: material.id, userId: req.user.id });
+        await Statistic.create({
+          materialId: material.id,
+          userId: req.user.id,
+        });
         console.log("Уникальная статистика сохранена");
       } else {
-        console.log("Запись уже существует — статистика не сохраняется повторно");
+        console.log(
+          "Запись уже существует — статистика не сохраняется повторно"
+        );
       }
     } else {
       console.log("Пользователь не авторизован");

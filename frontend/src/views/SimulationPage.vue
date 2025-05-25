@@ -1,88 +1,27 @@
 <template>
   <div>
     <h1>Управление лабораториями EVE-NG</h1>
+    <TaskTooltip taskText="Это текст задания для лаборатории по сети." />
     <button @click="fetchLabData">Открыть лабораторию</button>
     <WireTool ref="wireTool" @connectionCreated="addConnection" />
-    <div v-if="nodes.length > 0" class="canvas-container">
-      <v-stage ref="stage" :config="stageConfig">
-        <v-layer ref="layer">
-          <!-- Линии между узлами -->
-          <v-line
-            v-for="(link, index) in computedLinks"
-            :key="'line-' + index"
-            :config="{
-              points: link.points,
-              stroke: '#007bff',
-              strokeWidth: 2,
-              lineCap: 'round',
-              lineJoin: 'round',
-            }"
-          />
+    <LabCanvas
+      :nodes="nodes"
+      :links="links"
+      :deviceIcons="deviceIcons"
+      :stageConfig="stageConfig"
+      @drag-move="onDragMove"
+      @drag-end="onDragEnd"
+      @node-click="onNodeClick"
+      @context-menu="showContextMenu"
+    />
 
-          <!-- Узлы (устройства) -->
-          <v-group
-            v-for="node in nodes"
-            :key="'node-' + node.id"
-            :config="{
-              x: node.x || 0,
-              y: node.y || 0,
-              draggable: true,
-            }"
-            @dragmove="onDragMove($event, node)"
-            @dragend="onDragEnd(node)"
-            @click="
-              onNodeClick(node, $event);
-              openTelnet(node, $event);
-            "
-            @contextmenu="showContextMenu($event, node)"
-          >
-            <v-circle
-              :config="{
-                radius: 22,
-                fill: node.isOn ? '#007bff' : '#666',
-              }"
-            />
-            <v-image
-              :config="{
-                image: deviceIcons[node.icon],
-                width: 40,
-                height: 40,
-                offsetX: 20,
-                offsetY: 20,
-              }"
-            />
-            <v-text
-              :config="{
-                text: node.name,
-                fontSize: 12,
-                fill: '#333',
-                align: 'center',
-                y: 25,
-                x: -20,
-                width: 80,
-              }"
-            />
-          </v-group>
-        </v-layer>
-      </v-stage>
-    </div>
-
-    <div
-      id="context-menu"
-      @mouseleave="hideContextMenu"
-      style="
-        display: none;
-        position: absolute;
-        background-color: white;
-        border: 1px solid #ccc;
-        padding: 5px;
-        z-index: 1000;
-      "
-    >
-      <button @click="toggleNode(currentNode)">
-        {{ currentNode && currentNode.isOn ? "Stop" : "Start" }}
-      </button>
-    </div>
+    <ContextMenu
+      :visible="contextMenuVisible"
+      :node="currentNode"
+      :position="contextMenuPosition"
+      @toggle-node="toggleNode(currentNode)"
+      @hide="hideContextMenu"
+    />
 
     <div v-if="showConsole">
       <TheConsole @close="showConsole = false" />
@@ -94,12 +33,18 @@
 import axios from "axios";
 import TheConsole from "../components/TheConsole.vue";
 import WireTool from "../components/WireTool.vue";
+import LabCanvas from "../components/LabCanvas.vue";
+import ContextMenu from "../components/ContextMenu.vue";
+import TaskTooltip from "../components/TaskTooltip.vue";
 
 export default {
   name: "SimulationPage",
   components: {
     TheConsole,
     WireTool,
+    LabCanvas,
+    ContextMenu,
+    TaskTooltip,
   },
 
   data() {
@@ -113,6 +58,8 @@ export default {
       },
       currentNode: null,
       showConsole: false,
+      contextMenuPosition: { x: 0, y: 0 },
+      contextMenuVisible: false,
     };
   },
   computed: {
@@ -128,14 +75,6 @@ export default {
     },
   },
   methods: {
-    getNodeCenter(node) {
-      if (!node) return { x: 0, y: 0 };
-      return {
-        x: node.x || 0,
-        y: node.y || 0,
-      };
-    },
-
     async fetchLabData() {
       try {
         await axios.get("http://localhost:5000/api/labs/nodes/stop");
