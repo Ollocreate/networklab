@@ -30,10 +30,10 @@ export default {
         const response = await axios.get(
           `http://localhost:5000/api/materials/course/${courseSlug}`,
           {
-        headers: {
-          Authorization: `Bearer ${rootState.token}`,
-        },
-      }
+            headers: {
+              Authorization: `Bearer ${rootState.token}`,
+            },
+          }
         );
         commit("SET_MATERIALS", response.data);
       } catch (error) {

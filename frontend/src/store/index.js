@@ -113,6 +113,6 @@ export default createStore({
 
   modules: {
     material,
-    statistic
+    statistic,
   },
 });

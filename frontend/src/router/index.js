@@ -1,15 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
-import StudentAccount from "../views/StudentAccount.vue";
-import TeacherAccount from "../views/TeacherAccount.vue";
-import TheConsole from "@/components/lab/TheConsole.vue";
 import store from "../store";
-import StatisticPage from "@/views/StatisticPage.vue";
 
 const routes = [
   {
-  path: '/',
-  name: 'Home',
-  component: () => import('@/views/HomePage.vue')
+    path: "/",
+    name: "Home",
+    component: () => import("@/views/HomePage.vue"),
   },
   {
     path: "/auth",
@@ -34,7 +30,7 @@ const routes = [
   {
     path: "/console/:id",
     name: "Console",
-    component: TheConsole,
+    component: () => import("@/components/lab/TheConsole.vue"),
   },
   {
     path: "/:courseSlug",
@@ -49,19 +45,19 @@ const routes = [
   },
   {
     path: "/student",
-    component: StudentAccount,
+    component: () => import("@/views/StudentAccount.vue"),
     meta: { requiresAuth: true, role: "student" },
   },
   {
     path: "/teacher",
-    component: TeacherAccount,
+    component: () => import("@/views/TeacherAccount.vue"),
     meta: { requiresAuth: true, role: "teacher" },
   },
-    {
+  {
     path: "/stats",
-    component: StatisticPage,
+    component: () => import("@/views/StatisticPage.vue"),
   },
-      {
+  {
     path: "/enroll",
     component: () => import("@/views/EnrollPage.vue"),
   },

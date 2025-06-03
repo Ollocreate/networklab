@@ -15,7 +15,12 @@
       required
     ></v-text-field>
     <v-text-field v-model="email" label="E-mail" required></v-text-field>
-    <v-text-field v-model="password" label="Пароль" required></v-text-field>
+    <v-text-field
+      v-model="password"
+      label="Пароль"
+      type="password"
+      required
+    ></v-text-field>
 
     <div class="btn-container">
       <v-btn color="primary" @click="submit">Зарегистрироваться</v-btn>

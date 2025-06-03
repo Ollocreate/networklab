@@ -25,6 +25,20 @@
       </v-list>
     </v-card>
 
+    <div class="toolbar">
+      <v-card v-if="user && user.role === 'teacher'">
+        <v-btn color="primary" to="/materialcreate">Загрузить материал</v-btn>
+      </v-card>
+
+      <v-card>
+        <v-btn color="primary" to="/stats">Посмотреть статистику</v-btn>
+      </v-card>
+
+      <v-card>
+        <v-btn color="primary" to="/enroll">Записать на курс</v-btn>
+      </v-card>
+    </div>
+
     <v-alert v-if="!courses || courses.length === 0" type="info">
       Вы пока не ведёте ни один курс.
     </v-alert>
@@ -36,18 +50,6 @@
           <v-list-item-title>{{ material.title }}</v-list-item-title>
         </v-list-item>
       </v-list>
-    </v-card>
-
-    <v-card v-if="user && user.role === 'teacher'">
-      <v-btn color="primary" to="/materialcreate">Загрузить материал</v-btn>
-    </v-card>
-
-    <v-card>
-      <v-btn color="primary" to="/stats">Посмотреть статистику</v-btn>
-    </v-card>
-
-    <v-card>
-      <v-btn color="primary" to="/enroll">Записать на курс</v-btn>
     </v-card>
   </v-container>
 </template>
@@ -89,3 +91,14 @@ export default {
   },
 };
 </script>
+
+<style>
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  position: relative;
+}
+</style>

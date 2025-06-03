@@ -1,10 +1,20 @@
 <template>
-  <div>
-    <h1>Управление лабораториями EVE-NG</h1>
-    <TaskTooltip taskText="Это текст задания для лаборатории по сети." />
-    <button @click="fetchLabData">Открыть лабораторию</button>
-    <WireTool ref="wireTool" @connectionCreated="addConnection" />
+  <div class="lab-container">
+    <h2 style="margin: 10px 0">
+      Лабораторная работа. Просмотр таблицы MAC-адресов коммутатора
+    </h2>
+    <div class="toolbar">
+      <button @click="fetchLabData" class="open-lab-button">
+        Открыть лабораторию
+      </button>
+      <WireTool ref="wireTool" @connectionCreated="addConnection" />
+      <TaskTooltip
+        taskText="Соедините коммутатор с маршрутизатором проводом. Для просмотра МАС-адресa коммутатора введите команду show interfaces vlan 1."
+      />
+    </div>
+
     <LabCanvas
+      ref="labCanvas"
       :nodes="nodes"
       :links="links"
       :deviceIcons="deviceIcons"
@@ -16,16 +26,21 @@
     />
 
     <ContextMenu
+      ref="contextMenu"
       :visible="contextMenuVisible"
       :node="currentNode"
       :position="contextMenuPosition"
-      @toggle-node="toggleNode(currentNode)"
+      @toggle-node="() => toggleNode(currentNode)"
       @hide="hideContextMenu"
     />
 
     <div v-if="showConsole">
       <TheConsole @close="showConsole = false" />
     </div>
+
+    <button v-if="canvasLoaded" class="finish-button" @click="finishTask">
+      Завершить задание
+    </button>
   </div>
 </template>
 
@@ -57,23 +72,14 @@ export default {
         height: 500,
       },
       currentNode: null,
+      isConnecting: false,
       showConsole: false,
       contextMenuPosition: { x: 0, y: 0 },
       contextMenuVisible: false,
+      canvasLoaded: false,
     };
   },
-  computed: {
-    computedLinks() {
-      return this.links.map((link) => {
-        const sourceCenter = this.getNodeCenter(link.source);
-        const destCenter = this.getNodeCenter(link.destination);
-
-        return {
-          points: [sourceCenter.x, sourceCenter.y, destCenter.x, destCenter.y],
-        };
-      });
-    },
-  },
+  computed: {},
   methods: {
     async fetchLabData() {
       try {
@@ -141,6 +147,7 @@ export default {
       console.log("✅ Обработанные связи:", this.links);
 
       this.loadAllIcons();
+      this.canvasLoaded = true;
     },
 
     async loadAllIcons() {
@@ -176,7 +183,7 @@ export default {
       const newPos = event.target.position();
       node.x = newPos.x;
       node.y = newPos.y;
-      this.$refs.layer.getNode().batchDraw();
+      this.$refs.labCanvas?.getLayerNode()?.batchDraw();
     },
 
     onDragEnd(node) {
@@ -231,32 +238,48 @@ export default {
     onNodeClick(node, event) {
       if (event && event.evt.button !== 0) return;
 
-      if (node.isOn) {
-        console.warn(
-          `❗ Нода ${node.name} включена — нельзя подключить провод.`
-        );
-        alert(
-          `Узел ${node.name} включен. Выключите его перед созданием соединения.`
-        );
-        return;
-      }
+      const isWireMode = this.$refs.wireTool?.isConnecting;
 
-      this.$refs.wireTool.onNodeClick(node);
+      if (isWireMode) {
+        if (node.isOn) {
+          alert(
+            `Узел ${node.name} включен. Выключите его перед созданием соединения.`
+          );
+          return;
+        } else {
+          this.$refs.wireTool.onNodeClick(node);
+        }
+      } else {
+        if (!node.isOn) {
+          alert(
+            `Узел ${node.name} выключен. Включите его перед подключением к консоли.`
+          );
+          return;
+        } else {
+          this.openTelnet(node, event);
+        }
+      }
     },
+
     showContextMenu(event, node) {
       event.evt.preventDefault();
       event.evt.stopPropagation();
 
       this.currentNode = node;
-      const menu = document.getElementById("context-menu");
-      menu.style.display = "block";
-      menu.style.left = `${event.evt.clientX}px`;
-      menu.style.top = `${event.evt.clientY}px`;
+
+      const x = event.evt.pageX - 225;
+      const y = event.evt.pageY - 50;
+
+      this.contextMenuPosition = { x, y };
+      this.contextMenuVisible = true;
     },
 
     hideContextMenu() {
-      const menu = document.getElementById("context-menu");
+      const menu = this.$refs.contextMenu?.$el;
       menu.style.display = "none";
+    },
+    finishTask() {
+      this.$router.go(-1);
     },
   },
   mounted() {
@@ -277,14 +300,6 @@ button {
   cursor: pointer;
 }
 
-.canvas-container {
-  margin: 20px auto;
-  width: 800px;
-  height: 500px;
-  border: 1px solid #000;
-  background-color: #f8f9fa;
-}
-
 #context-menu {
   border-radius: 4px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -303,5 +318,53 @@ button {
 
 #context-menu button:hover {
   background-color: #0056b3;
+}
+
+.lab-container {
+  position: relative;
+}
+
+.finish-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1001;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.finish-button:hover {
+  background-color: #218838;
+}
+
+.open-lab-button {
+  margin: 0;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  user-select: none;
+}
+
+.open-lab-button:hover {
+  background-color: #0056b3;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  position: relative;
 }
 </style>

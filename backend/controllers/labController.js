@@ -73,6 +73,7 @@ exports.startNode = async (req, res) => {
 
 exports.stopNode = async (req, res) => {
   try {
+    const { nodeId } = req.params;
     // const { labPath } = "/test.unl"; // Например: "/User1/MyLab.unl"
     // const { nodeId } = "1"; // Например: "/User1/MyLab.unl"
 
@@ -97,7 +98,6 @@ exports.stopAllNodes = async (req, res) => {
     res.status(500).json({ error: "Ошибка при выключении узлов" });
   }
 };
-
 
 exports.getNodeInterfaces = async (req, res) => {
   try {

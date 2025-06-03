@@ -5,7 +5,7 @@
       <select
         v-if="courses.length"
         v-model="selectedCourseId"
-        class="border p-2 rounded"
+        class="custom-select"
       >
         <option v-for="course in courses" :key="course.id" :value="course.id">
           {{ course.title }}
@@ -13,15 +13,38 @@
       </select>
     </div>
 
-    <div v-if="selectedCourseId && studentStats.length">
-      <h3 class="font-semibold">Просмотры:</h3>
-      <p>Всего просмотрено: {{ studentStats.length }} материалов</p>
-      <p>Всего в курсе: {{ materialCount }} материалов</p>
-      <p>Прогресс: {{ progressPercentage }}%</p>
+    <div v-if="selectedCourseId && studentStats.length" class="stats-container">
+      <h3 class="font-semibold text-lg mb-2">Просмотры</h3>
+      <p class="mb-1">
+        Всего просмотрено: <strong>{{ studentStats.length }}</strong> материалов
+      </p>
+      <p class="mb-1">
+        Всего в курсе: <strong>{{ materialCount }}</strong> материалов
+      </p>
+      <p class="mb-4">
+        Прогресс: <strong>{{ progressPercentage }}%</strong>
+      </p>
 
-      <ul>
-        <li v-for="s in studentStats" :key="s.id">
-          {{ formatDate(s.createdAt) }} — Материал ID: {{ s.materialId }}
+      <div class="progress-bar-background">
+        <div
+          class="progress-bar-fill"
+          :style="{ width: progressPercentage + '%' }"
+          :aria-valuenow="progressPercentage"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          role="progressbar"
+        ></div>
+      </div>
+
+      <ul class="view-list">
+        <li
+          v-for="s in studentStats"
+          :key="s.id"
+          class="view-item"
+          :title="`Материал ID: ${s.materialId}`"
+        >
+          <span class="view-date">{{ formatDate(s.createdAt) }}</span>
+          <span class="view-material">{{ s.material.title }}</span>
         </li>
       </ul>
     </div>
@@ -81,3 +104,15 @@ export default {
   },
 };
 </script>
+
+<style>
+.view-material {
+  max-width: 300px;
+  text-align: end;
+}
+
+.view-item {
+  display: flex;
+  align-items: center;
+}
+</style>

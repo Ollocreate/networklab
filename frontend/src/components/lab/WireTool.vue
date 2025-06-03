@@ -1,9 +1,16 @@
 <template>
   <div>
-    <button @click="activateWireMode">Режим проводов</button>
+    <button
+      @click="activateWireMode"
+      :class="['wire-mode-button', { active: wireMode }]"
+      title="Режим проводов"
+    >
+      🔌 Режим проводов
+    </button>
 
     <div v-if="showModal" class="modal">
       <h3>Выбор интерфейсов</h3>
+      <!-- остальное без изменений -->
       <div>
         <label>Узел 1 - Интерфейс:</label>
         <select v-model="selectedIface1">
@@ -49,6 +56,11 @@ export default {
       selectedIface1: null,
       selectedIface2: null,
     };
+  },
+  computed: {
+    isConnecting() {
+      return this.wireMode;
+    },
   },
   methods: {
     activateWireMode() {
@@ -199,5 +211,27 @@ select {
 
 select:focus {
   border-color: #0056b3;
+}
+
+.wire-mode-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  user-select: none;
+  margin: 0;
+}
+
+.wire-mode-button:hover {
+  background-color: #0056b3;
+}
+
+.wire-mode-button.active {
+  background-color: #004a99;
+  box-shadow: 0 0 8px 2px rgba(0, 123, 255, 0.7);
 }
 </style>

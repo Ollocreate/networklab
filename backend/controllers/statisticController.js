@@ -50,7 +50,7 @@ exports.getStatisticsForCourseAndStudent = async (req, res) => {
       include: {
         model: User,
         as: "users",
-        attributes: ["id", "username", "email"],
+        attributes: ["id", "username", "email", "role"],
         through: { attributes: [] },
       },
     });
@@ -83,6 +83,13 @@ exports.getStatisticsForCourseAndStudent = async (req, res) => {
         userId: studentId,
         materialId: materialIds,
       },
+      include: [
+        {
+          model: Material,
+          as: "material",
+          attributes: ["id", "title"],
+        },
+      ],
     });
 
     res.json({
@@ -96,12 +103,10 @@ exports.getStatisticsForCourseAndStudent = async (req, res) => {
   }
 };
 
-// Получить статистику по студенту для всех курсов
 exports.getStatisticsForStudent = async (req, res) => {
   const { studentId } = req.params;
 
   try {
-    // Получаем пользователя с курсами и материалами
     const user = await User.findByPk(studentId, {
       include: {
         model: Course,
@@ -119,17 +124,22 @@ exports.getStatisticsForStudent = async (req, res) => {
       return res.status(404).json({ error: "Студент не записан на курсы" });
     }
 
-    // Собираем все доступные студенту materialId
     const materialIds = user.courses.flatMap((course) =>
       course.Materials.map((m) => m.id)
     );
 
-    // Получаем статистику по этим материалам
     const statistics = await Statistic.findAll({
       where: {
         userId: studentId,
         materialId: materialIds,
       },
+      include: [
+        {
+          model: Material,
+          as: "material",
+          attributes: ["id", "title"],
+        },
+      ],
     });
 
     res.json({ statistics });

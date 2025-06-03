@@ -45,7 +45,7 @@ exports.getStudentsForCourse = async (req, res) => {
       include: {
         model: User,
         as: "users",
-        attributes: ["id", "username", "email"],
+        attributes: ["id", "username", "email", "role"],
         through: { attributes: [] },
       },
     });

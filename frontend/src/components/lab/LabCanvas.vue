@@ -79,6 +79,9 @@ export default {
     },
   },
   methods: {
+    getLayerNode() {
+      return this.$refs.layer?.getNode?.();
+    },
     getNodeCenter(node) {
       if (!node) return { x: 0, y: 0 };
       return {
@@ -101,6 +104,7 @@ export default {
 <style scoped>
 .canvas-container {
   margin: 20px auto;
+  position: relative;
   width: 800px;
   height: 500px;
   border: 1px solid #000;
